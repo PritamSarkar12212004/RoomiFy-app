@@ -17,7 +17,7 @@ import Axios from "../../utils/api/Axios";
 import Warning from "@/src/components/Error/LongError/Warning";
 
 const ProfileUpdate = () => {
-  const { data, setchanger } = useRoute().params;
+  const { data } = useRoute().params;
   const id = data.id;
   const [name, setName] = useState(data.name);
   const [email, setEmail] = useState(data.email);
@@ -37,7 +37,6 @@ const ProfileUpdate = () => {
       setprofileImage(result.assets[0].uri);
     }
   };
-  console.log(id); // Make sure this outputs the correct id from the route
 
   const uploadDataBackend = async () => {
     setLoading(true);
@@ -63,8 +62,6 @@ const ProfileUpdate = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      setchanger(true);
-      console.log(response.data);
       setLoading(false);
     } catch (error) {
       console.error(error);

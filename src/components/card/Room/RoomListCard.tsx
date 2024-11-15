@@ -4,6 +4,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import Octicons from "@expo/vector-icons/Octicons";
 import { useNavigation, useRouter } from "expo-router";
+import Axios from "@/src/utils/api/Axios";
 
 const RoomListCard = ({
   userImage,
@@ -12,12 +13,23 @@ const RoomListCard = ({
   id,
   setEnable,
   setComments,
+  bacnedLike,
+  backendComment,
+  setProductID,
+  token,
+  setRerender,
 }: any) => {
   const navigation = useNavigation();
+
+  const handleLike = () => {
+    Axios.post("/room/like", { token: token, productID: id }).then((res) => {
+      setRerender(res);
+    });
+  };
+
   useEffect(() => {
-    setTimeout(() => {
-      setComments("fwfiwfwiufbi");
-    }, 2000);
+    setProductID(id);
+    setComments(backendComment);
   }, []);
   return (
     <View className="w-fulll mt-5 rounded-3xl bg-gray-00 border-[1px] shadow-black  border-zinc-400 gap-3  px-4 py-4">
@@ -57,10 +69,14 @@ const RoomListCard = ({
       </View>
       <View className="w-full flex-row justify-between  px-2">
         <View className="flex-row items-center justify-start gap-3">
-          <View className="flex flex-row gap-1 items-center">
-            <Fontisto name="heart-alt" size={24} color="black" />
-            <Text className="text-center">100</Text>
-          </View>
+          <TouchableOpacity onPress={() => handleLike()}>
+            <View className="flex flex-row gap-1 items-center">
+              <Fontisto name="heart-alt" size={24} color="black" />
+              <Text className="text-center">
+                {bacnedLike ? bacnedLike.length : 0}
+              </Text>
+            </View>
+          </TouchableOpacity>
           <View className="flex flex-row gap-1 items-center">
             <TouchableOpacity onPress={() => setEnable(true)}>
               <MaterialCommunityIcons
@@ -69,7 +85,9 @@ const RoomListCard = ({
                 color="black"
               />
             </TouchableOpacity>
-            <Text className="text-center">30</Text>
+            <Text className="text-center">
+              {backendComment ? backendComment.length : 0}
+            </Text>
           </View>
         </View>
         <View className="flex-row items-center justify-center gap-2">
