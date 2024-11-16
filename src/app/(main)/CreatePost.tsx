@@ -63,18 +63,6 @@ const CreatePost = () => {
     ) {
       setclosewarning(true);
       return;
-    } else if (filesize > 9200000) {
-      setfilesize(0);
-      setclosewarningfile(true);
-      setMainimage(null);
-      setChild1(null);
-      setChild2(null);
-      setChild3(null);
-      setChild4(null);
-      setChild5(null);
-      setChild6(null);
-
-      return;
     }
     setLoading(true);
     const formData = new FormData();
@@ -88,7 +76,7 @@ const CreatePost = () => {
 
     // options
     formData.append("id", token);
-    formData.append("description", description);
+    formData.append("description", toString(description));
     formData.append("price", price);
     formData.append("family", family);
     formData.append("single", single);
@@ -340,6 +328,7 @@ const CreatePost = () => {
         </View>
         <View className="w-full px-3">
           <TextInput
+            
             value={description}
             onChangeText={(text) => setdescription(text)}
             className="w-full h-44 text-lg border-[1px]  border-gray-400 rounded-lg p-2 mt-4 placeholder:items-start justify-start"
