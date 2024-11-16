@@ -1,31 +1,28 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Modal } from "react-native";
 import React, { useEffect } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import Octicons from "@expo/vector-icons/Octicons";
 import { useNavigation, useRouter } from "expo-router";
 import Axios from "@/src/utils/api/Axios";
+import { userContext } from "../../../context/Context";
 
 const RoomListCard = ({
   userImage,
   mainImage,
   userName,
   id,
-  setEnable,
   setComments,
   bacnedLike,
   backendComment,
-  setProductID,
   token,
-  setRerender,
 }: any) => {
   const navigation = useNavigation();
-
   const handleLike = () => {
-    Axios.post("/room/like", { token: token, productID: id }).then((res) => {
-      setRerender(res);
-    });
+    Axios.post("/room/like", { token: token, productID: id }).then((res) => {});
   };
+  const { productIDSetter, productID, setProductID, commentSetter } =
+    userContext();
 
   useEffect(() => {
     setProductID(id);
@@ -33,6 +30,7 @@ const RoomListCard = ({
   }, []);
   return (
     <View className="w-fulll mt-5 rounded-3xl bg-gray-00 border-[1px] shadow-black  border-zinc-400 gap-3  px-4 py-4">
+    
       <View className="w-full flex flex-row justify-between  items-start ">
         <View className=" flex flex-row gap-3 items-center">
           <TouchableOpacity>
@@ -78,7 +76,7 @@ const RoomListCard = ({
             </View>
           </TouchableOpacity>
           <View className="flex flex-row gap-1 items-center">
-            <TouchableOpacity onPress={() => setEnable(true)}>
+            <TouchableOpacity onPress={() => commentSetter()}>
               <MaterialCommunityIcons
                 name="comment-minus-outline"
                 size={27}

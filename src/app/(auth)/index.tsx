@@ -1,16 +1,8 @@
-import {
-  View,
-  Text,
-  Image,
-  StatusBar,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackGrondImage } from "@/src/constants/BackGroundImage";
-import { useNavigation, useRouter } from "expo-router";
-import Header from "@/src/components/Header/Header";
+import { useRouter } from "expo-router";
 
 const wallcome = () => {
   const navigation = useRouter();

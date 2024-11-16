@@ -15,14 +15,18 @@ import { Icons } from "@/src/constants/Icons";
 import * as ImagePicker from "expo-image-picker";
 import Axios from "../../utils/api/Axios";
 import Warning from "@/src/components/Error/LongError/Warning";
+import { userContext } from "../../context/Context";
+import { useNavigation } from "expo-router";
 
 const ProfileUpdate = () => {
-  const { data } = useRoute().params;
-  const id = data.id;
-  const [name, setName] = useState(data.name);
-  const [email, setEmail] = useState(data.email);
-  const [location, setlocation] = useState(data.city);
-  const [profileImage, setprofileImage] = useState(data.profile);
+  const { profileData } = userContext();
+  const navigation = useNavigation();
+
+  const id = profileData.id;
+  const [name, setName] = useState(profileData.name);
+  const [email, setEmail] = useState(profileData.email);
+  const [location, setlocation] = useState(profileData.city);
+  const [profileImage, setprofileImage] = useState(profileData.profile);
   const [loading, setLoading] = useState(false);
 
   const pickImage = async () => {
@@ -62,6 +66,7 @@ const ProfileUpdate = () => {
           "Content-Type": "multipart/form-data",
         },
       });
+      navigation.goBack();
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -79,7 +84,7 @@ const ProfileUpdate = () => {
   };
   return (
     <>
-      {data ? (
+      {profileData ? (
         <View className="w-full h-screen relative">
           <Warning
             closewarning={closewarning}

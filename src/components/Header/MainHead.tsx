@@ -12,8 +12,9 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Icons } from "@/src/constants/Icons";
 import { useNavigation } from "expo-router";
-
+import { userContext } from "../../context/Context";
 const MainHead = () => {
+  const { profileData } = userContext();
   const navigation = useNavigation();
   return (
     <>
@@ -26,7 +27,12 @@ const MainHead = () => {
             <Ionicons name="add-circle-outline" size={35} color="black" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-            <Image source={Icons.user} className="w-10 h-10 rounded-full" />
+            {profileData ? (
+              <Image
+                source={{ uri: profileData.profile }}
+                className="w-10 h-10 rounded-full"
+              />
+            ) : null}
           </TouchableOpacity>
         </View>
       </SafeAreaView>

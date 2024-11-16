@@ -18,8 +18,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Warning from "@/src/components/Error/LongError/Warning";
 import { useNavigation } from "expo-router";
 import FileSize from "@/src/components/Error/LongError/FileSize";
+import { userContext } from "../../context/Context";
 
 const CreatePost = () => {
+  const { token, getData } = userContext();
   const navigation = useNavigation();
   // Define individual states for each category toggle
   const [description, setdescription] = useState(null);
@@ -44,7 +46,6 @@ const CreatePost = () => {
   const [child4, setChild4] = useState(null);
   const [child5, setChild5] = useState(null);
   const [child6, setChild6] = useState(null);
-  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(false);
   const [closewarning, setclosewarning] = useState(false);
   const [closewarningfile, setclosewarningfile] = useState(false);
@@ -110,7 +111,7 @@ const CreatePost = () => {
         },
       }).then((response) => {
         if (response.data.status === "success") {
-          console.log(response.data);
+          getData();
           setLoading(false);
           navigation.goBack();
         }
@@ -204,13 +205,8 @@ const CreatePost = () => {
       setChild6(result.assets[0].uri);
     }
   };
-  const tokenGEt = async () => {
-    const tokendata = await AsyncStorage.getItem("token");
-    setToken(tokendata);
-  };
-  useEffect(() => {
-    tokenGEt();
-  }, []);
+
+  useEffect(() => {}, []);
   return (
     <View className="w-full pb-32">
       <ProfileNavigationHeader log={false} name="Upload Post" />
@@ -328,7 +324,6 @@ const CreatePost = () => {
         </View>
         <View className="w-full px-3">
           <TextInput
-            
             value={description}
             onChangeText={(text) => setdescription(text)}
             className="w-full h-44 text-lg border-[1px]  border-gray-400 rounded-lg p-2 mt-4 placeholder:items-start justify-start"

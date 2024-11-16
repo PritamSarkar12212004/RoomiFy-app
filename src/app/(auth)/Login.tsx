@@ -14,8 +14,10 @@ import Type1Error from "@/src/components/Error/LongError/Type1Error";
 import Warning from "@/src/components/Error/LongError/Warning";
 import Axios from "../../utils/api/Axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { userContext } from "../../context/Context";
 
 const Login = () => {
+  const { authSetter } = userContext();
   const [close, setclose] = useState(false);
   const [closewarning, setclosewarning] = useState(false);
   const router = useRouter(); // Corrected navigation hook
@@ -29,8 +31,10 @@ const Login = () => {
     try {
       const res = await Axios.post("/login", { email, password });
       if (res.data.status === "success") {
-        await AsyncStorage.setItem("token", res.data.token);
-        router.push("/(main)");
+        await AsyncStorage.setItem("token", res.data.token).then((res) => {
+          authSetter(true);
+          router.replace("/(main)");
+        });
       } else {
         setMessage(res.data.message);
         setclosewarning(true);

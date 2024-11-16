@@ -1,21 +1,21 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
-import MapView from "react-native-maps";
 
 import { useRoute } from "@react-navigation/native";
 import Axios from "@/src/utils/api/Axios";
 import Warning from "@/src/components/Error/LongError/Warning";
-import { useNavigation } from "expo-router";
 import { ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Feather from "@expo/vector-icons/Feather";
+import ImageView from "react-native-image-viewing";
+
 const ViewRoom = () => {
   const router = useRoute();
   const [data, setdata] = useState(null);
   const [closewarning, setclosewarning] = useState(false);
   const [mainImg, setmainImg] = useState(null);
-  const [facility, setfacility] = useState([]);
-
+  const [viewImage, setviewImage] = useState(false);
+  const [images, setImages] = useState([]);
   const mainimgSetter = (img) => {
     setmainImg(img);
   };
@@ -24,6 +24,15 @@ const ViewRoom = () => {
       .then((res) => {
         if (res.status == 200) {
           setdata(res.data);
+          setImages([
+            { uri: res.data.mainImage },
+            { uri: res.data.childImg1 },
+            { uri: res.data.childImg2 },
+            { uri: res.data.childImg3 },
+            { uri: res.data.childImg4 },
+            { uri: res.data.childImg5 },
+            { uri: res.data.childImg6 },
+          ]);
           setmainImg(res.data.mainImage);
         }
       })
@@ -35,6 +44,14 @@ const ViewRoom = () => {
     <>
       {data ? (
         <SafeAreaView>
+          <ImageView
+            images={images}
+            imageIndex={0}
+            visible={viewImage}
+            onRequestClose={() => setviewImage(!viewImage)}
+            visible={viewImage}
+            swipeToCloseEnabled={true}
+          />
           <ScrollView>
             <View className="w-full  px-3">
               <Warning
@@ -45,90 +62,21 @@ const ViewRoom = () => {
               <View className="w-full pb-7  border-b-4 border-b-blue-600 rounded-b-[40px] ">
                 <View>
                   {mainImg ? (
-                    <View className="w-full h-72  rounded-3xl">
-                      <Image
-                        source={{ uri: mainImg }}
-                        className="w-full h-72  rounded-3xl"
-                      />
-                    </View>
+                    <TouchableOpacity onPress={() => setviewImage(true)}>
+                      <View className="w-full h-72  rounded-3xl">
+                        <Image
+                          source={{ uri: mainImg }}
+                          className="w-full h-72  rounded-3xl"
+                        />
+                      </View>
+                    </TouchableOpacity>
                   ) : (
                     <View className="w-full h-72  rounded-3xl">
                       <ActivityIndicator size="large" color="#0000ff" />
                     </View>
                   )}
                 </View>
-                <View className="w-full flex-row flex-wrap gap-3 mt-5 items-center justify-between">
-                  <TouchableOpacity
-                    onPress={() => mainimgSetter(data.childImg1)}
-                    activeOpacity={0.8}
-                  >
-                    <Image
-                      source={{ uri: data.childImg1 }}
-                      className="w-24 h-24 rounded-2xl"
-                      loadingIndicatorSource={require("../../assets/Loading/cat.gif")}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => mainimgSetter(data.childImg2)}
-                    activeOpacity={0.8}
-                  >
-                    <Image
-                      source={{ uri: data.childImg2 }}
-                      className="w-24 h-24 rounded-2xl"
-                      loadingIndicatorSource={require("../../assets/Loading/cat.gif")}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => mainimgSetter(data.childImg3)}
-                    activeOpacity={0.8}
-                  >
-                    <Image
-                      source={{ uri: data.childImg3 }}
-                      className="w-24 h-24 rounded-2xl"
-                      loadingIndicatorSource={require("../../assets/Loading/cat.gif")}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => mainimgSetter(data.childImg4)}
-                    activeOpacity={0.8}
-                  >
-                    <Image
-                      source={{ uri: data.childImg4 }}
-                      className="w-24 h-24 rounded-2xl"
-                      loadingIndicatorSource={require("../../assets/Loading/cat.gif")}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => mainimgSetter(data.childImg5)}
-                    activeOpacity={0.8}
-                  >
-                    <Image
-                      source={{ uri: data.childImg5 }}
-                      className="w-24 h-24 rounded-2xl"
-                      loadingIndicatorSource={require("../../assets/Loading/cat.gif")}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => mainimgSetter(data.childImg6)}
-                    activeOpacity={0.8}
-                  >
-                    <Image
-                      source={{ uri: data.childImg6 }}
-                      className="w-24 h-24 rounded-2xl"
-                      loadingIndicatorSource={require("../../assets/Loading/cat.gif")}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => mainimgSetter(data.mainImage)}
-                    activeOpacity={0.8}
-                  >
-                    <Image
-                      source={{ uri: data.mainImage }}
-                      className="w-24 h-24 rounded-2xl"
-                      loadingIndicatorSource={require("../../assets/Loading/cat.gif")}
-                    />
-                  </TouchableOpacity>
-                </View>
+            
               </View>
               <View className="w-full mt-7 border-b-[1px] border-gray-300 py-1">
                 <Text className="text-2xl font-bold">

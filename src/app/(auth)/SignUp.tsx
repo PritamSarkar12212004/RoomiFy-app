@@ -10,14 +10,16 @@ import React, { useEffect, useState } from "react";
 import NavigationHeader from "@/src/components/navigationHEader/NavigationHeader";
 import Feather from "@expo/vector-icons/Feather";
 import Fontisto from "@expo/vector-icons/Fontisto";
-import { useRouter } from "expo-router";
+import { router, useRouter } from "expo-router";
 import { Icons } from "@/src/constants/Icons";
 import * as Location from "expo-location";
 import Axios from "../../utils/api/Axios";
 import Type1Error from "@/src/components/Error/LongError/Type1Error";
 import Warning from "@/src/components/Error/LongError/Warning";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { userContext } from "../../context/Context";
 const SignUp = () => {
+  const { tokenSetter } = userContext();
   const [location, setLocation] = useState<Location.LocationObject | null>(
     null
   );
@@ -35,7 +37,8 @@ const SignUp = () => {
   const tokensaveLocalStorege = async (token: string) => {
     try {
       await AsyncStorage.setItem("token", token);
-      navigation.push("/(main)");
+      tokenSetter(token);
+      router.replace("/(main)");
     } catch (error) {
       console.log(error);
     }

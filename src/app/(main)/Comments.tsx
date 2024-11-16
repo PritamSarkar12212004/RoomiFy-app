@@ -12,14 +12,10 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import CommentErro from "@/src/components/Error/comment/CommentErro";
 import Axios from "@/src/utils/api/Axios";
+import { userContext } from "../../context/Context";
 
-const Comments = ({
-  setEnable,
-  comments,
-  token,
-  productID,
-  setRerender,
-}: any) => {
+const Comments = ({ comments, token, productID }: any) => {
+  const { commentSetter } = userContext();
   const [commentitem, setcommentitem] = useState(null);
   const [full, setfull] = useState(false);
   const [time, settime] = useState(false);
@@ -29,8 +25,7 @@ const Comments = ({
     } else {
       Axios.post("/room/comment", { token, productID, commentitem }).then(
         (res) => {
-          setRerender(res);
-          setEnable(false);
+          commentSetter();
         }
       );
     }
@@ -46,7 +41,7 @@ const Comments = ({
     >
       <View className="w-full  flex flex-row  justify-between items-center">
         <TouchableOpacity
-          onPress={() => setEnable(false)}
+          onPress={() => commentSetter()}
           className="h-10 w-10 rounded-full bg-zinc-300 flex justify-center items-center"
         >
           <Entypo name="cross" size={30} color="black" />
