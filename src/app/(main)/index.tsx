@@ -4,6 +4,7 @@ import MainHead from "@/src/components/Header/MainHead";
 import RoomListCard from "@/src/components/card/Room/RoomListCard";
 import Comments from "./Comments";
 import { userContext } from "../../context/Context";
+import { router } from "expo-router";
 
 const Index = () => {
   const { token, data, productID, comment, getData, getProfile } =

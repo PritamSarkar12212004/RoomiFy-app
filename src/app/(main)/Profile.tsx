@@ -34,11 +34,11 @@ const Profile = () => {
               <View className="flex gap-3">
                 <View className="flex flex-row gap-2">
                   <MaterialCommunityIcons
-                    name="email-check-outline"
+                    name="phone-check-outline"
                     size={25}
                     color="black"
                   />
-                  <Text className="xl">{profileData.email}</Text>
+                  <Text className="xl">{profileData.phone}</Text>
                 </View>
                 <View className="flex flex-row gap-2">
                   <Ionicons name="location-outline" size={25} color="black" />

@@ -28,7 +28,7 @@ const SignUp = () => {
   const [male, setMale] = useState(false);
   const [female, setFemale] = useState(false);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState(null);
   const [password, setPassword] = useState("");
   const [secure, setsecure] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const SignUp = () => {
     };
     if (
       name === "" ||
-      email === "" ||
+      phone === null ||
       password === "" ||
       (male === false && female === false)
     ) {
@@ -66,7 +66,7 @@ const SignUp = () => {
 
       Axios.post("/signup", {
         username: name,
-        email,
+        phone,
         password,
         gender: gender(),
         location,
@@ -141,13 +141,14 @@ const SignUp = () => {
             </View>
             <View className="relative">
               <TextInput
-                value={email}
-                onChangeText={(text) => setEmail(text)}
+                value={phone}
+                onChangeText={(text) => setPhone(text)}
                 className="w-full h-16 border-[1px] border-zinc-400 rounded-2xl px-5 text-lg"
-                placeholder="Enter your email"
+                placeholder="Enter your phone number"
+                keyboardType="numeric"
               />
               <View className="absolute top-1/2 right-5 -translate-y-1/2">
-                <Fontisto name="email" size={24} color="black" />
+                <Fontisto name="phone" size={24} color="black" />
               </View>
             </View>
             <View className="relative">

@@ -13,15 +13,13 @@ import { useRouter } from "expo-router"; // Only use useRouter for navigation
 import Type1Error from "@/src/components/Error/LongError/Type1Error";
 import Warning from "@/src/components/Error/LongError/Warning";
 import Axios from "../../utils/api/Axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { userContext } from "../../context/Context";
-
 const Login = () => {
-  const { authSetter } = userContext();
+  const { getLogin } = userContext();
   const [close, setclose] = useState(false);
   const [closewarning, setclosewarning] = useState(false);
   const router = useRouter(); // Corrected navigation hook
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -29,12 +27,9 @@ const Login = () => {
   const callBackend = async () => {
     setLoading(true); // Set loading to true before starting the request
     try {
-      const res = await Axios.post("/login", { email, password });
+      const res = await Axios.post("/login", { phone, password });
       if (res.data.status === "success") {
-        await AsyncStorage.setItem("token", res.data.token).then((res) => {
-          authSetter(true);
-          router.replace("/(main)");
-        });
+        getLogin(res.data.token);
       } else {
         setMessage(res.data.message);
         setclosewarning(true);
@@ -49,7 +44,7 @@ const Login = () => {
   };
 
   const validation = () => {
-    if (email && password) {
+    if (phone && password) {
       callBackend();
     } else {
       setclose(true);
@@ -80,13 +75,14 @@ const Login = () => {
           <Text>Please login to continue</Text>
           <View className="relative">
             <TextInput
-              value={email}
-              onChangeText={setEmail}
+              value={phone}
+              onChangeText={setPhone}
               className="w-full h-16 border-[1px] border-zinc-400 rounded-2xl px-5 text-lg"
-              placeholder="Enter your email"
+              placeholder="Enter your phone number"
+              keyboardType="phone-pad" // Use phone-pad for phone number input
             />
             <View className="absolute top-1/2 right-5 -translate-y-1/2">
-              <Fontisto name="email" size={24} color="black" />
+              <Fontisto name="phone" size={24} color="black" />
             </View>
           </View>
           <View className="relative">

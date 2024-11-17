@@ -7,9 +7,10 @@ import {
   useState,
 } from "react";
 import Axios from "../utils/api/Axios";
+import { router } from "expo-router";
 const Context = createContext();
 export const ContextProvider = ({ children }) => {
-  const [auth, setAuth] = useState(true);
+  const [auth, setAuth] = useState(false);
   const [data, setdata] = useState(null);
   const [token, setToken] = useState(null);
   const [productID, setProductID] = useState(null);
@@ -67,6 +68,31 @@ export const ContextProvider = ({ children }) => {
   const dataSetter = (data) => {
     setdata(data);
   };
+
+  const getToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (token) {
+        setAuth(true);
+      } else {
+        setAuth(false);
+      }
+      tokenSetter(token);
+    } catch (error) {
+      console.error("Error fetching token:", error);
+    }
+  };
+
+  const getLogin = async (data: any) => {
+    const setToken = await AsyncStorage.setItem("token", data);
+    authSetter(true);
+    router.replace("/(main)");
+  };
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
   return (
     <Context.Provider
       value={{
@@ -87,7 +113,8 @@ export const ContextProvider = ({ children }) => {
         profileDataSetter,
         profileData,
         getData,
-        getProfile
+        getProfile,
+        getLogin,
       }}
     >
       {children}

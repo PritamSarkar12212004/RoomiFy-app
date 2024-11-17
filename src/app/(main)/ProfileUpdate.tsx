@@ -24,7 +24,7 @@ const ProfileUpdate = () => {
 
   const id = profileData.id;
   const [name, setName] = useState(profileData.name);
-  const [email, setEmail] = useState(profileData.email);
+  const [phone, setPhone] = useState(profileData.phone);
   const [location, setlocation] = useState(profileData.city);
   const [profileImage, setprofileImage] = useState(profileData.profile);
   const [loading, setLoading] = useState(false);
@@ -56,8 +56,8 @@ const ProfileUpdate = () => {
       name: `uploaded_image.${fileExtension}`, // Dynamically set the file name
     });
     formData.append("id", id); // Add the id here directly to the formData
-    formData.append("name", name); // You can also append other fields like name, email, location if needed
-    formData.append("email", email);
+    formData.append("name", name); // You can also append other fields like name, phone, location if needed
+    formData.append("phone", phone);
     formData.append("location", location);
 
     try {
@@ -76,7 +76,7 @@ const ProfileUpdate = () => {
   const [closewarning, setclosewarning] = useState(false);
 
   const validation = () => {
-    if (name === "" || email === "" || location === "" || profileImage === "") {
+    if (name === "" || phone === "" || location === "" || profileImage === "") {
       setclosewarning(!closewarning);
     } else {
       uploadDataBackend();
@@ -128,9 +128,9 @@ const ProfileUpdate = () => {
               </View>
               <View className="w-full relative">
                 <TextInput
-                  value={email}
-                  onChangeText={(text) => setEmail(text)}
-                  placeholder={email}
+                  value={phone}
+                  onChangeText={(text) => setPhone(text)}
+                  placeholder={phone}
                   className="w-full border-[1px] border-zinc-400 px-3 h-16  rounded-3xl items-center justify-center text-xl"
                 />
                 <View className="absolute right-3 top-5">
