@@ -19,8 +19,6 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useNavigation } from "expo-router";
 import { FacilityIcon } from "@/src/constants/FacilityIncon";
 import Feather from "@expo/vector-icons/Feather";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import Modal from "react-native-modal";
 import LocationWarning from "@/src/components/warnings/LocationWarning";
 
 const ViewRoom = () => {
@@ -31,7 +29,6 @@ const ViewRoom = () => {
   const [viewImage, setviewImage] = useState(false);
   const [images, setImages] = useState([]);
   const [description, setdescription] = useState("");
-  const [showMap, setshowMap] = useState(false);
   const mavigation = useNavigation();
 
   const linkDailer = (data) => {
@@ -68,7 +65,7 @@ const ViewRoom = () => {
         <StatusBar barStyle={"dark-content"} />
       )}
       {data ? (
-        <View className="w-full h-full relative">
+        <View className="w-full h-full relative ">
           <LocationWarning />
           <ImageView
             images={images}
@@ -80,46 +77,6 @@ const ViewRoom = () => {
           />
           <ScrollView>
             <View className="w-full  ">
-              <Modal
-                className="bg-black"
-                isVisible={showMap}
-                onBackButtonPress={() => setshowMap(false)}
-                onBackdropPress={() => setshowMap(false)}
-              >
-                <MapView
-                  provider={PROVIDER_GOOGLE}
-                  showsUserLocation={true}
-                  userLocationPriority="high"
-                  showsTraffic={true}
-                  zoomControlEnabled={false}
-                  toolbarEnabled={true}
-                  loadingEnabled={true}
-                  mapType="standard"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "black",
-                  }}
-                  paddingAdjustmentBehavior="never"
-                  camera={{
-                    center: {
-                      latitude: data.owner.exact_location.lat,
-                      longitude: data.owner.exact_location.lon,
-                    },
-                    pitch: 0,
-                    heading: 0,
-                    altitude: 0,
-                    zoom: 15,
-                  }}
-                >
-                  <Marker
-                    coordinate={{
-                      latitude: data.owner.exact_location.lat,
-                      longitude: data.owner.exact_location.lon,
-                    }}
-                  />
-                </MapView>
-              </Modal>
               <Warning
                 closewarning={closewarning}
                 setclosewarning={setclosewarning}
@@ -191,7 +148,7 @@ const ViewRoom = () => {
                       horizontal={true}
                       showsHorizontalScrollIndicator={false}
                     >
-                      <View className="flex-row gap-5">
+                      <View className="flex-row gap-5 mb-20">
                         {data.facility.wifi && (
                           <View className=" w-20 py-2 b flex gap-2 items-center">
                             <View className="h-16 w-16 rounded-full px-2 py-2  bg-zinc-200 ">
@@ -289,42 +246,6 @@ const ViewRoom = () => {
                       </View>
                     </ScrollView>
                   </View>
-                </View>
-                <View className="w-full h-96 mt-7">
-                  <MapView
-                    provider={PROVIDER_GOOGLE}
-                    onPress={() => setshowMap(true)}
-                    showsUserLocation={true}
-                    userLocationPriority="high"
-                    showsTraffic={true}
-                    zoomControlEnabled={false}
-                    toolbarEnabled={true}
-                    loadingEnabled={true}
-                    mapType="standard"
-                    style={{ width: "100%", height: "100%" }}
-                    zoomEnabled={false}
-                    zoomTapEnabled={false}
-                    scrollDuringRotateOrZoomEnabled={false}
-                    scrollEnabled={false}
-                    paddingAdjustmentBehavior="never"
-                    camera={{
-                      center: {
-                        latitude: data.owner.exact_location.lat,
-                        longitude: data.owner.exact_location.lon,
-                      },
-                      pitch: 0,
-                      heading: 0,
-                      altitude: 0,
-                      zoom: 15,
-                    }}
-                  >
-                    <Marker
-                      coordinate={{
-                        latitude: data.owner.exact_location.lat,
-                        longitude: data.owner.exact_location.lon,
-                      }}
-                    />
-                  </MapView>
                 </View>
               </View>
             </View>

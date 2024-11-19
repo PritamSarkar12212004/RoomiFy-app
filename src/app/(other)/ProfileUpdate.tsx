@@ -10,7 +10,6 @@ import React, { useState } from "react";
 import ProfileNavigationHeader from "@/src/components/Header/ProfileNavigationHeader";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { useRoute } from "@react-navigation/native";
 import { Icons } from "@/src/constants/Icons";
 import * as ImagePicker from "expo-image-picker";
 import Axios from "../../utils/api/Axios";
