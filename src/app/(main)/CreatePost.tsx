@@ -19,6 +19,8 @@ import Warning from "@/src/components/Error/LongError/Warning";
 import { useNavigation } from "expo-router";
 import FileSize from "@/src/components/Error/LongError/FileSize";
 import { userContext } from "../../context/Context";
+import * as ImageManipulator from "expo-image-manipulator";
+import axios from "axios";
 
 const CreatePost = () => {
   const { token, getData } = userContext();
@@ -49,77 +51,104 @@ const CreatePost = () => {
   const [loading, setLoading] = useState(false);
   const [closewarning, setclosewarning] = useState(false);
   const [closewarningfile, setclosewarningfile] = useState(false);
-  const [filesize, setfilesize] = useState(0);
   const uploadImages = async () => {
     if (
-      mainimage === null ||
-      child1 === null ||
-      child2 === null ||
-      child3 === null ||
-      child4 === null ||
-      child5 === null ||
-      child6 === null ||
-      price === null ||
-      description === " "
+      !mainimage ||
+      !child1 ||
+      !child2 ||
+      !child3 ||
+      !child4 ||
+      !child5 ||
+      !child6 ||
+      !price ||
+      description.trim() === ""
     ) {
       setclosewarning(true);
       return;
     }
     setLoading(true);
-    const formData = new FormData();
-    // Append main image
-    const mainImageFile = {
-      uri: mainimage,
-      type: "image/jpeg",
-      name: "main-image.jpg",
+  
+    const uploadToCloudinary = async (imageUri) => {
+      try {
+        const fileExtension = imageUri.split(".").pop();
+        const formData = new FormData();
+        formData.append("file", {
+          uri: imageUri,
+          type: `image/${fileExtension}`,
+          name: `uploaded_image.${fileExtension}`,
+        });
+        formData.append("upload_preset", "RoomiFy");
+  
+        const response = await axios.post(
+          "https://api.cloudinary.com/v1_1/dftt4ow6q/image/upload",
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+        return response.data.secure_url;
+      } catch (error) {
+        // Log error if there is an issue with the upload
+        console.error(`Error uploading image: ${imageUri}`, error.response || error);
+        throw error; // Rethrow to stop execution if error occurs
+      }
     };
-    formData.append("mainImage", mainImageFile);
-
-    // options
-    formData.append("id", token);
-    formData.append("description", description);
-    formData.append("price", price);
-    formData.append("family", family);
-    formData.append("single", single);
-    formData.append("group", group);
-    formData.append("double", double);
-    formData.append("independent", independent);
-    formData.append("nonIndependent", nonIndependent);
-    formData.append("bikeParking", bikeParking);
-    formData.append("wifi", wifi);
-    formData.append("light", light);
-    formData.append("fan", fan);
-    formData.append("cooler", cooler);
-    formData.append("bed", bed);
-    formData.append("attachedWashroom", attachedWashroom);
-
-    // Append child images
-    const childImages = [child1, child2, child3, child4, child5, child6];
-    childImages.forEach((image, index) => {
-      const childImageFile = {
-        uri: image,
-        type: "image/jpeg",
-        name: `child-image-${index + 1}.jpg`,
-      };
-      formData.append("childImages", childImageFile);
-    });
-
+  
     try {
-      const response = await Axios.post("/upload/product", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }).then((response) => {
-        if (response.data.status === "success") {
-          getData();
-          setLoading(false);
-          navigation.goBack();
-        }
+      // Upload all images concurrently
+      const [mainImageUrl, child1Url, child2Url, child3Url, child4Url, child5Url, child6Url] =
+        await Promise.all([
+          uploadToCloudinary(mainimage),
+          uploadToCloudinary(child1),
+          uploadToCloudinary(child2),
+          uploadToCloudinary(child3),
+          uploadToCloudinary(child4),
+          uploadToCloudinary(child5),
+          uploadToCloudinary(child6),
+        ]);
+  
+      // Proceed with the API request if all images are uploaded successfully
+      const response = await Axios.post("/upload/product", {
+        id: token,
+        description,
+        price,
+        family,
+        single,
+        group,
+        double,
+        independent,
+        nonIndependent,
+        bikeParking,
+        wifi,
+        light,
+        fan,
+        cooler,
+        bed,
+        attachedWashroom,
+        mainImage: mainImageUrl,
+        childImg1: child1Url,
+        childImg2: child2Url,
+        childImg3: child3Url,
+        childImg4: child4Url,
+        childImg5: child5Url,
+        childImg6: child6Url,
       });
+  
+      if (response.data.status === "success") {
+        getData();
+        setLoading(false);
+        navigation.goBack();
+      } else {
+        // Handle unexpected API response
+        console.error("Unexpected API response", response.data);
+        setLoading(false);
+      }
     } catch (error) {
-      console.log(error);
+      // Log any other errors in the try block (API call or image upload errors)
+      console.error("Error uploading images or submitting product:", error);
+      setLoading(false);
     }
   };
+  
+
   const pickImage1 = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -129,8 +158,12 @@ const CreatePost = () => {
     });
 
     if (!result.canceled) {
-      setMainimage(result.assets[0].uri);
-      setfilesize((pre) => pre + result.assets[0].fileSize);
+      const compressedImage = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        [{ resize: { width: result.assets[0].width * 0.8 } }], // Resize to 80% of the original width
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Compress to 80% quality
+      );
+      setMainimage(compressedImage.uri);
     }
   };
   const childimgpiker1 = async () => {
@@ -141,8 +174,12 @@ const CreatePost = () => {
       quality: 1,
     });
     if (!result.canceled) {
-      setfilesize((pre) => pre + result.assets[0].fileSize);
-      setChild1(result.assets[0].uri);
+      const compressedImage = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        [{ resize: { width: result.assets[0].width * 0.8 } }], // Resize to 80% of the original width
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Compress to 80% quality
+      );
+      setChild1(compressedImage.uri);
     }
   };
   const childimgpiker2 = async () => {
@@ -153,8 +190,12 @@ const CreatePost = () => {
       quality: 1,
     });
     if (!result.canceled) {
-      setfilesize((pre) => pre + result.assets[0].fileSize);
-      setChild2(result.assets[0].uri);
+      const compressedImage = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        [{ resize: { width: result.assets[0].width * 0.8 } }], // Resize to 80% of the original width
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Compress to 80% quality
+      );
+      setChild2(compressedImage.uri);
     }
   };
   const childimgpiker3 = async () => {
@@ -165,8 +206,12 @@ const CreatePost = () => {
       quality: 1,
     });
     if (!result.canceled) {
-      setfilesize((pre) => pre + result.assets[0].fileSize);
-      setChild3(result.assets[0].uri);
+      const compressedImage = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        [{ resize: { width: result.assets[0].width * 0.8 } }], // Resize to 80% of the original width
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Compress to 80% quality
+      );
+      setChild3(compressedImage.uri);
     }
   };
   const childimgpiker4 = async () => {
@@ -177,8 +222,12 @@ const CreatePost = () => {
       quality: 1,
     });
     if (!result.canceled) {
-      setfilesize((pre) => pre + result.assets[0].fileSize);
-      setChild4(result.assets[0].uri);
+      const compressedImage = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        [{ resize: { width: result.assets[0].width * 0.8 } }], // Resize to 80% of the original width
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Compress to 80% quality
+      );
+      setChild4(compressedImage.uri);
     }
   };
   const childimgpiker5 = async () => {
@@ -189,8 +238,12 @@ const CreatePost = () => {
       quality: 1,
     });
     if (!result.canceled) {
-      setfilesize((pre) => pre + result.assets[0].fileSize);
-      setChild5(result.assets[0].uri);
+      const compressedImage = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        [{ resize: { width: result.assets[0].width * 0.8 } }], // Resize to 80% of the original width
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Compress to 80% quality
+      );
+      setChild5(compressedImage.uri);
     }
   };
   const childimgpiker6 = async () => {
@@ -201,8 +254,12 @@ const CreatePost = () => {
       quality: 1,
     });
     if (!result.canceled) {
-      setfilesize((pre) => pre + result.assets[0].fileSize);
-      setChild6(result.assets[0].uri);
+      const compressedImage = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        [{ resize: { width: result.assets[0].width * 0.8 } }], // Resize to 80% of the original width
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Compress to 80% quality
+      );
+      setChild6(compressedImage.uri);
     }
   };
 
