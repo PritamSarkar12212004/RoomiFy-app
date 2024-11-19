@@ -76,7 +76,7 @@ const ProfileUpdate = () => {
   const [closewarning, setclosewarning] = useState(false);
 
   const validation = () => {
-    if (name === "" || phone === "" || location === "" || profileImage === "") {
+    if (name === "" || phone === null || location === "" || profileImage === "") {
       setclosewarning(!closewarning);
     } else {
       uploadDataBackend();
@@ -127,12 +127,12 @@ const ProfileUpdate = () => {
                 </View>
               </View>
               <View className="w-full relative">
-                <TextInput
+                {/* <TextInput
                   value={phone}
                   onChangeText={(text) => setPhone(text)}
                   placeholder={phone}
                   className="w-full border-[1px] border-zinc-400 px-3 h-16  rounded-3xl items-center justify-center text-xl"
-                />
+                /> */}
                 <View className="absolute right-3 top-5">
                   <AntDesign name="phone" size={24} color="black" />
                 </View>

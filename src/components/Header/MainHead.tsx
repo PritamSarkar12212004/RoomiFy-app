@@ -1,38 +1,24 @@
-import {
-  View,
-  Text,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-  Touchable,
-} from "react-native";
+import { View, Text, StatusBar, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { useNavigation } from "expo-router";
-import { userContext } from "../../context/Context";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+
 const MainHead = () => {
-  const { profileData } = userContext();
-  const navigation = useNavigation();
   return (
     <>
       <StatusBar barStyle={"dark-content"} />
-      <SafeAreaView className="w-full flex px-4 py-3   items-center flex-row justify-between">
-        <Text className="text-3xl opacity-60  font-bold">RoomiFy</Text>
-        <View className="flex flex-row gap-4 items-center">
-          <AntDesign name="hearto" size={30} color="black" />
-          <TouchableOpacity onPress={() => navigation.navigate("CreatePost")}>
-            <Ionicons name="add-circle-outline" size={35} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-            {profileData ? (
-              <Image
-                source={{ uri: profileData.profile }}
-                className="w-10 h-10 rounded-full"
-              />
-            ) : null}
-          </TouchableOpacity>
+      <SafeAreaView className="w-full ">
+        <View className="flex px-4 py-2 items-center flex-row justify-between">
+          <Text className="text-3xl font-extrabold text-blue-600">RoomiFy</Text>
+          <View className="flex flex-row gap-4 items-center">
+            <TouchableOpacity
+              activeOpacity={0.8}
+              className="flex flex-row items-center gap-2 bg-blue-500 px-4 py-2 rounded-3xl"
+            >
+              <Text className="text-white text-lg font-bold">NearBy</Text>
+              <FontAwesome6 name="location-dot" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     </>

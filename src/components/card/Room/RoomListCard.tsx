@@ -1,12 +1,11 @@
 import { View, Text, Image, TouchableOpacity, Modal } from "react-native";
 import React, { useEffect } from "react";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Fontisto from "@expo/vector-icons/Fontisto";
-import Octicons from "@expo/vector-icons/Octicons";
-import { useNavigation, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import Axios from "@/src/utils/api/Axios";
 import { userContext } from "../../../context/Context";
-
+import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Ionicons from "@expo/vector-icons/Ionicons";
 const RoomListCard = ({
   userImage,
   mainImage,
@@ -16,81 +15,56 @@ const RoomListCard = ({
   bacnedLike,
   backendComment,
   token,
+  exact_location,
+  price,
+  
 }: any) => {
-  const navigation = useNavigation();
+  const roite = useRouter();
   const handleLike = () => {
     Axios.post("/room/like", { token: token, productID: id }).then((res) => {});
   };
-  const { productIDSetter, productID, setProductID, commentSetter } =
-    userContext();
+  const { setProductID, commentSetter } = userContext();
 
   useEffect(() => {
     setProductID(id);
     setComments(backendComment);
   }, []);
   return (
-    <View className="w-fulll mt-5 rounded-3xl bg-gray-00 border-[1px] shadow-black  border-zinc-400 gap-3  px-4 py-4">
-    
-      <View className="w-full flex flex-row justify-between  items-start ">
-        <View className=" flex flex-row gap-3 items-center">
-          <TouchableOpacity>
-            <Image
-              source={{ uri: userImage }}
-              className="w-12 h-12 rounded-full"
-            />
-          </TouchableOpacity>
-          <View className="flex flex-col">
-            <Text className="font-bold">{userName}</Text>
-            <Text className="opacity-70">jun 29</Text>
+    <View className="w-fulll mb-7 rounded-3xl bg-zinc-200 pb-2 ">
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() =>
+          roite.push({ pathname: "/(other)/ViewRoom", params: { id } })
+        }
+      >
+        <Image
+          source={{
+            uri: mainImage,
+          }}
+          className="w-full h-80 rounded-3xl"
+        />
+      </TouchableOpacity>
+      <View className="w-full px-3 py-1">
+        <View className="w-full flex-row justify-between  opacity-65">
+          <View>
+            <Text className="text-3xl font-bold">{userName}</Text>
+          </View>
+          <View className="flex-row items-center gap-4 opacity-65">
+            <AntDesign name="like2" size={30} color="black" />
+            <FontAwesome name="comment-o" size={30} color="black" />
           </View>
         </View>
-        <View>
-          <MaterialCommunityIcons
-            name="dots-horizontal"
-            size={30}
-            color="black"
-          />
-        </View>
-      </View>
-      <View className="w-full">
-        <TouchableOpacity
-          activeOpacity={0.6}
-          onPress={() => navigation.navigate("ViewRoom", { id })}
-        >
-          <Image
-            source={{
-              uri: mainImage,
-            }}
-            className="w-full h-72 rounded-3xl"
-          />
-        </TouchableOpacity>
-      </View>
-      <View className="w-full flex-row justify-between  px-2">
-        <View className="flex-row items-center justify-start gap-3">
-          <TouchableOpacity onPress={() => handleLike()}>
-            <View className="flex flex-row gap-1 items-center">
-              <Fontisto name="heart-alt" size={24} color="black" />
-              <Text className="text-center">
-                {bacnedLike ? bacnedLike.length : 0}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <View className="flex flex-row gap-1 items-center">
-            <TouchableOpacity onPress={() => commentSetter()}>
-              <MaterialCommunityIcons
-                name="comment-minus-outline"
-                size={27}
-                color="black"
-              />
-            </TouchableOpacity>
-            <Text className="text-center">
-              {backendComment ? backendComment.length : 0}
+        <View className="w-full flex-row items-center justify-between pr-2 mt-2">
+          <View className="flex-row gap-1 opacity-60 items-center justify-between  ">
+            <Ionicons name="location" size={24} color="black" />
+            <Text className="text-wrap">
+              {exact_location.city},{exact_location.village},
+              {exact_location.state_district}
             </Text>
           </View>
-        </View>
-        <View className="flex-row items-center justify-center gap-2">
-          <Text className="font-bold">BansiNagar</Text>
-          <Octicons name="location" size={24} color="black" />
+          <View>
+            <Text className="text-xl font-bold">₹{price}</Text>
+          </View>
         </View>
       </View>
     </View>

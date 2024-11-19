@@ -19,10 +19,38 @@ const Login = () => {
   const [close, setclose] = useState(false);
   const [closewarning, setclosewarning] = useState(false);
   const router = useRouter(); // Corrected navigation hook
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(null);
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+
+  const phoneValidation = (phone) => {
+    // Check if phone contains any non-numeric characters or dots
+    const regex = /^[0-9]*$/; // Allows numeric characters or an empty string
+
+    if (typeof phone !== "string") {
+      alert("Phone number must be a string.");
+      return;
+    }
+
+    if (!regex.test(phone)) {
+      alert(
+        "Phone number can only contain numeric characters and no dots or special characters."
+      );
+      return;
+    }
+
+    if (phone.length > 10) {
+      alert("Phone number must be between 10 to 15 digits.");
+      return;
+    }
+
+    // Allow empty string to clear the input
+    setPhone(phone); // Update phone state if valid
+  };
+  const validationPass = (pass) => {
+    setPassword(pass);
+  };
 
   const callBackend = async () => {
     setLoading(true); // Set loading to true before starting the request
@@ -76,7 +104,7 @@ const Login = () => {
           <View className="relative">
             <TextInput
               value={phone}
-              onChangeText={setPhone}
+              onChangeText={(phone) => phoneValidation(phone)}
               className="w-full h-16 border-[1px] border-zinc-400 rounded-2xl px-5 text-lg"
               placeholder="Enter your phone number"
               keyboardType="phone-pad" // Use phone-pad for phone number input
@@ -88,7 +116,7 @@ const Login = () => {
           <View className="relative">
             <TextInput
               value={password}
-              onChangeText={setPassword}
+              onChangeText={(pass) => validationPass(pass)}
               secureTextEntry // Secure input for password
               className="w-full h-16 border-[1px] border-zinc-400 rounded-2xl px-5 text-lg"
               placeholder="Enter your password"
@@ -106,7 +134,7 @@ const Login = () => {
         <View className="w-full flex gap-10">
           {loading ? (
             <TouchableOpacity
-              className="w-full flex items-center justify-center shadow-black drop-shadow-lg py-6 mt-5 bg-[#F8EE00] rounded-3xl"
+              className="w-full flex items-center justify-center shadow-black drop-shadow-lg py-6 mt-5 bg-blue-500 rounded-3xl"
               activeOpacity={0.7}
             >
               <ActivityIndicator size="large" color="#000" />
@@ -114,10 +142,10 @@ const Login = () => {
           ) : (
             <TouchableOpacity
               onPress={validation}
-              className="w-full flex items-center justify-center shadow-black drop-shadow-lg py-6 mt-5 bg-[#F8EE00] rounded-3xl"
+              className="w-full flex items-center justify-center shadow-black drop-shadow-lg py-6 mt-5 bg-blue-500 rounded-3xl"
               activeOpacity={0.7}
             >
-              <Text className="text-xl">Login</Text>
+              <Text className="text-xl text-white">Login</Text>
             </TouchableOpacity>
           )}
 

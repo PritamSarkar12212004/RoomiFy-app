@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import ProfileNavigationHeader from "@/src/components/Header/ProfileNavigationHeader";
@@ -14,7 +15,6 @@ import Feather from "@expo/vector-icons/Feather";
 import ToggleSwitch from "toggle-switch-react-native"; // make sure you have installed this library
 import * as ImagePicker from "expo-image-picker";
 import Axios from "@/src/utils/api/Axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Warning from "@/src/components/Error/LongError/Warning";
 import { useNavigation } from "expo-router";
 import FileSize from "@/src/components/Error/LongError/FileSize";
@@ -24,7 +24,7 @@ const CreatePost = () => {
   const { token, getData } = userContext();
   const navigation = useNavigation();
   // Define individual states for each category toggle
-  const [description, setdescription] = useState(null);
+  const [description, setdescription] = useState("");
   const [price, setprice] = useState(null);
   const [family, setFamily] = useState(false);
   const [single, setSingle] = useState(false);
@@ -60,7 +60,7 @@ const CreatePost = () => {
       child5 === null ||
       child6 === null ||
       price === null ||
-      description === null
+      description === " "
     ) {
       setclosewarning(true);
       return;
@@ -77,7 +77,7 @@ const CreatePost = () => {
 
     // options
     formData.append("id", token);
-    formData.append("description", toString(description));
+    formData.append("description", description);
     formData.append("price", price);
     formData.append("family", family);
     formData.append("single", single);
@@ -206,280 +206,285 @@ const CreatePost = () => {
     }
   };
 
-  useEffect(() => {}, []);
   return (
-    <View className="w-full pb-32">
-      <ProfileNavigationHeader log={false} name="Upload Post" />
-      <Warning
-        closewarning={closewarning}
-        setclosewarning={setclosewarning}
-        message={" Do not fill blank"}
-      />
-      <FileSize
-        closewarningfile={closewarningfile}
-        setclosewarningfile={setclosewarningfile}
-        message={
-          " Do Not use HD image The totoal size should be less than 10MB"
-        }
-      />
-      <ScrollView className="w-full ">
-        <View className="w-full px-4">
-          <TouchableOpacity activeOpacity={0.7} onPress={() => pickImage1()}>
-            <View className="w-full h-52 border border-zinc-500 bg-zinc-200 overflow-hidden  rounded-3xl flex items-center justify-center gap-2">
-              {mainimage ? (
-                <Image source={{ uri: mainimage }} className="w-full h-full" />
-              ) : (
-                <>
-                  <Ionicons
-                    name="cloud-upload-outline"
-                    size={60}
-                    color="black"
+    <>
+      <StatusBar barStyle="dark-content" />
+      <View className="w-full pb-32">
+        <ProfileNavigationHeader log={false} name="Upload Post" />
+        <Warning
+          closewarning={closewarning}
+          setclosewarning={setclosewarning}
+          message={" Do not fill blank"}
+        />
+        <FileSize
+          closewarningfile={closewarningfile}
+          setclosewarningfile={setclosewarningfile}
+          message={
+            " Do Not use HD image The totoal size should be less than 10MB"
+          }
+        />
+        <ScrollView className="w-full ">
+          <View className="w-full px-4">
+            <TouchableOpacity activeOpacity={0.7} onPress={() => pickImage1()}>
+              <View className="w-full h-52 border border-zinc-500 bg-zinc-200 overflow-hidden  rounded-3xl flex items-center justify-center gap-2">
+                {mainimage ? (
+                  <Image
+                    source={{ uri: mainimage }}
+                    className="w-full h-full"
                   />
-                  <Text className="opacity-75">Master Image</Text>
-                </>
+                ) : (
+                  <>
+                    <Ionicons
+                      name="cloud-upload-outline"
+                      size={60}
+                      color="black"
+                    />
+                    <Text className="opacity-75">Master Image</Text>
+                  </>
+                )}
+              </View>
+            </TouchableOpacity>
+
+            <View className="w-full flex-row flex-wrap justify-between mt-4">
+              <TouchableOpacity
+                className="w-[32%] mt-3"
+                activeOpacity={0.7}
+                onPress={() => childimgpiker1()}
+              >
+                <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
+                  {child1 ? (
+                    <Image source={{ uri: child1 }} className="w-full h-full" />
+                  ) : (
+                    <Feather name="upload" size={30} color="black" />
+                  )}
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="w-[32%] mt-3"
+                activeOpacity={0.7}
+                onPress={() => childimgpiker2()}
+              >
+                <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
+                  {child2 ? (
+                    <Image source={{ uri: child2 }} className="w-full h-full" />
+                  ) : (
+                    <Feather name="upload" size={30} color="black" />
+                  )}
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="w-[32%] mt-3"
+                activeOpacity={0.7}
+                onPress={() => childimgpiker3()}
+              >
+                <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
+                  {child2 ? (
+                    <Image source={{ uri: child3 }} className="w-full h-full" />
+                  ) : (
+                    <Feather name="upload" size={30} color="black" />
+                  )}
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="w-[32%] mt-3"
+                activeOpacity={0.7}
+                onPress={() => childimgpiker4()}
+              >
+                <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
+                  {child2 ? (
+                    <Image source={{ uri: child4 }} className="w-full h-full" />
+                  ) : (
+                    <Feather name="upload" size={30} color="black" />
+                  )}
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="w-[32%] mt-3"
+                activeOpacity={0.7}
+                onPress={() => childimgpiker5()}
+              >
+                <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
+                  {child2 ? (
+                    <Image source={{ uri: child5 }} className="w-full h-full" />
+                  ) : (
+                    <Feather name="upload" size={30} color="black" />
+                  )}
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="w-[32%] mt-3"
+                activeOpacity={0.7}
+                onPress={() => childimgpiker6()}
+              >
+                <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
+                  {child2 ? (
+                    <Image source={{ uri: child6 }} className="w-full h-full" />
+                  ) : (
+                    <Feather name="upload" size={30} color="black" />
+                  )}
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View className="w-full px-3">
+            <TextInput
+              value={description}
+              onChangeText={(text) => setdescription(text)}
+              className="w-full h-44 text-lg border-[1px]  border-gray-400 rounded-lg p-2 mt-4 placeholder:items-start justify-start"
+              multiline={true}
+              placeholder="Description"
+            />
+          </View>
+          <View className="w-full px-4 ">
+            <TextInput
+              value={price}
+              onChangeText={(text) => setprice(text)}
+              inputMode="numeric"
+              placeholder="Rent"
+              className="w-full h-16 border border-zinc-400 rounded-lg p-2 mt-4 placeholder:items-start justify-start text-xl"
+            />
+          </View>
+          <View className="w-full mt-4 px-3">
+            <Text className="text-xl mb-3">Category</Text>
+            <View className="w-full flex-row flex-wrap gap-4">
+              <ToggleSwitch
+                isOn={family}
+                onColor="green"
+                offColor="red"
+                label="Family"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setFamily(!family)}
+              />
+              <ToggleSwitch
+                isOn={single}
+                onColor="green"
+                offColor="red"
+                label="Single"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setSingle(!single)}
+              />
+              <ToggleSwitch
+                isOn={group}
+                onColor="green"
+                offColor="red"
+                label="Group"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setGroup(!group)}
+              />
+              <ToggleSwitch
+                isOn={double}
+                onColor="green"
+                offColor="red"
+                label="Double"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setDouble(!double)}
+              />
+              <ToggleSwitch
+                isOn={independent}
+                onColor="green"
+                offColor="red"
+                label="Independent"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setIndependent(!independent)}
+              />
+              <ToggleSwitch
+                isOn={nonIndependent}
+                onColor="green"
+                offColor="red"
+                label="Non-Independent"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setNonIndependent(!nonIndependent)}
+              />
+              <ToggleSwitch
+                isOn={bikeParking}
+                onColor="green"
+                offColor="red"
+                label="Bike Parking"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setBikeParking(!bikeParking)}
+              />
+              <ToggleSwitch
+                isOn={wifi}
+                onColor="green"
+                offColor="red"
+                label="Wifi"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setWifi(!wifi)}
+              />
+              <ToggleSwitch
+                isOn={light}
+                onColor="green"
+                offColor="red"
+                label="Light"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setLight(!light)}
+              />
+              <ToggleSwitch
+                isOn={fan}
+                onColor="green"
+                offColor="red"
+                label="Fan"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setFan(!fan)}
+              />
+              <ToggleSwitch
+                isOn={cooler}
+                onColor="green"
+                offColor="red"
+                label="Cooler"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setCooler(!cooler)}
+              />
+              <ToggleSwitch
+                isOn={bed}
+                onColor="green"
+                offColor="red"
+                label="Bed"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setBed(!bed)}
+              />
+              <ToggleSwitch
+                isOn={attachedWashroom}
+                onColor="green"
+                offColor="red"
+                label="Attached Washroom"
+                labelStyle={{ color: "black", fontWeight: "500" }}
+                size="medium"
+                onToggle={() => setAttachedWashroom(!attachedWashroom)}
+              />
+            </View>
+            <View className="mt-7 w-full px-10 flex justify-center items-center">
+              {loading ? (
+                <TouchableOpacity className="w-full py-6 bg-green-500 rounded-3xl">
+                  <ActivityIndicator size="large" color="white" />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  className="w-full py-6 bg-green-500 rounded-3xl"
+                  onPress={() => uploadImages()}
+                >
+                  <Text className="text-xl text-white  text-center">
+                    Create Post
+                  </Text>
+                </TouchableOpacity>
               )}
             </View>
-          </TouchableOpacity>
-
-          <View className="w-full flex-row flex-wrap justify-between mt-4">
-            <TouchableOpacity
-              className="w-[32%] mt-3"
-              activeOpacity={0.7}
-              onPress={() => childimgpiker1()}
-            >
-              <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
-                {child1 ? (
-                  <Image source={{ uri: child1 }} className="w-full h-full" />
-                ) : (
-                  <Feather name="upload" size={30} color="black" />
-                )}
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-[32%] mt-3"
-              activeOpacity={0.7}
-              onPress={() => childimgpiker2()}
-            >
-              <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
-                {child2 ? (
-                  <Image source={{ uri: child2 }} className="w-full h-full" />
-                ) : (
-                  <Feather name="upload" size={30} color="black" />
-                )}
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-[32%] mt-3"
-              activeOpacity={0.7}
-              onPress={() => childimgpiker3()}
-            >
-              <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
-                {child2 ? (
-                  <Image source={{ uri: child3 }} className="w-full h-full" />
-                ) : (
-                  <Feather name="upload" size={30} color="black" />
-                )}
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-[32%] mt-3"
-              activeOpacity={0.7}
-              onPress={() => childimgpiker4()}
-            >
-              <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
-                {child2 ? (
-                  <Image source={{ uri: child4 }} className="w-full h-full" />
-                ) : (
-                  <Feather name="upload" size={30} color="black" />
-                )}
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-[32%] mt-3"
-              activeOpacity={0.7}
-              onPress={() => childimgpiker5()}
-            >
-              <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
-                {child2 ? (
-                  <Image source={{ uri: child5 }} className="w-full h-full" />
-                ) : (
-                  <Feather name="upload" size={30} color="black" />
-                )}
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-[32%] mt-3"
-              activeOpacity={0.7}
-              onPress={() => childimgpiker6()}
-            >
-              <View className="h-32 border border-zinc-400 bg-zinc-200 overflow-hidden rounded-3xl flex items-center justify-center">
-                {child2 ? (
-                  <Image source={{ uri: child6 }} className="w-full h-full" />
-                ) : (
-                  <Feather name="upload" size={30} color="black" />
-                )}
-              </View>
-            </TouchableOpacity>
           </View>
-        </View>
-        <View className="w-full px-3">
-          <TextInput
-            value={description}
-            onChangeText={(text) => setdescription(text)}
-            className="w-full h-44 text-lg border-[1px]  border-gray-400 rounded-lg p-2 mt-4 placeholder:items-start justify-start"
-            multiline={true}
-            placeholder="Description"
-          />
-        </View>
-        <View className="w-full px-4 ">
-          <TextInput
-            value={price}
-            onChangeText={(text) => setprice(text)}
-            inputMode="numeric"
-            placeholder="Rent"
-            className="w-full h-16 border border-zinc-400 rounded-lg p-2 mt-4 placeholder:items-start justify-start text-xl"
-          />
-        </View>
-        <View className="w-full mt-4 px-3">
-          <Text className="text-xl mb-3">Category</Text>
-          <View className="w-full flex-row flex-wrap gap-4">
-            <ToggleSwitch
-              isOn={family}
-              onColor="green"
-              offColor="red"
-              label="Family"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setFamily(!family)}
-            />
-            <ToggleSwitch
-              isOn={single}
-              onColor="green"
-              offColor="red"
-              label="Single"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setSingle(!single)}
-            />
-            <ToggleSwitch
-              isOn={group}
-              onColor="green"
-              offColor="red"
-              label="Group"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setGroup(!group)}
-            />
-            <ToggleSwitch
-              isOn={double}
-              onColor="green"
-              offColor="red"
-              label="Double"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setDouble(!double)}
-            />
-            <ToggleSwitch
-              isOn={independent}
-              onColor="green"
-              offColor="red"
-              label="Independent"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setIndependent(!independent)}
-            />
-            <ToggleSwitch
-              isOn={nonIndependent}
-              onColor="green"
-              offColor="red"
-              label="Non-Independent"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setNonIndependent(!nonIndependent)}
-            />
-            <ToggleSwitch
-              isOn={bikeParking}
-              onColor="green"
-              offColor="red"
-              label="Bike Parking"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setBikeParking(!bikeParking)}
-            />
-            <ToggleSwitch
-              isOn={wifi}
-              onColor="green"
-              offColor="red"
-              label="Wifi"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setWifi(!wifi)}
-            />
-            <ToggleSwitch
-              isOn={light}
-              onColor="green"
-              offColor="red"
-              label="Light"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setLight(!light)}
-            />
-            <ToggleSwitch
-              isOn={fan}
-              onColor="green"
-              offColor="red"
-              label="Fan"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setFan(!fan)}
-            />
-            <ToggleSwitch
-              isOn={cooler}
-              onColor="green"
-              offColor="red"
-              label="Cooler"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setCooler(!cooler)}
-            />
-            <ToggleSwitch
-              isOn={bed}
-              onColor="green"
-              offColor="red"
-              label="Bed"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setBed(!bed)}
-            />
-            <ToggleSwitch
-              isOn={attachedWashroom}
-              onColor="green"
-              offColor="red"
-              label="Attached Washroom"
-              labelStyle={{ color: "black", fontWeight: "500" }}
-              size="medium"
-              onToggle={() => setAttachedWashroom(!attachedWashroom)}
-            />
-          </View>
-          <View className="mt-7 w-full px-10 flex justify-center items-center">
-            {loading ? (
-              <TouchableOpacity className="w-full py-6 bg-green-500 rounded-3xl">
-                <ActivityIndicator size="large" color="white" />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                className="w-full py-6 bg-green-500 rounded-3xl"
-                onPress={() => uploadImages()}
-              >
-                <Text className="text-xl text-white  text-center">
-                  Create Post
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </View>
+    </>
   );
 };
 

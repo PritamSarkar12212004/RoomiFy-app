@@ -3,12 +3,12 @@ import React, { useEffect } from "react";
 import ProfileNavigationHeader from "@/src/components/Header/ProfileNavigationHeader";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router, useNavigation } from "expo-router";
+import { router, useNavigation, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { userContext } from "../../context/Context";
 const Profile = () => {
   const { profileData } = userContext();
-  const navigation = useNavigation();
+  const navigation = useRouter();
   const Logouter = () => {
     AsyncStorage.removeItem("token");
     router.replace("/(auth)");
@@ -54,7 +54,9 @@ const Profile = () => {
                 <Text className="text-2xl text-white">Logout</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate("ProfileUpdate")}
+                onPress={() =>
+                  navigation.push({ pathname: "/(other)/ProfileUpdate" })
+                }
                 className="px-20 py-6 bg-blue-500 rounded-3xl flex-row items-center justify-center gap-2"
                 activeOpacity={0.8}
               >

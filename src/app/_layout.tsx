@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { router, Stack } from "expo-router";
 import "../../global.css";
 import { ContextProvider, userContext } from "../context/Context";
+import { Analytics } from "@vercel/analytics/react";
 
 const _layout = () => {
   return (

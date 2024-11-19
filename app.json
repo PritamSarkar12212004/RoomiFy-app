@@ -20,7 +20,12 @@
         "foregroundImage": "./src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.pritam_2004.RoomiFy"
+      "package": "com.pritam_2004.RoomiFy",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCGehDWa6yd-1d22343TVp6g95iyb733Lk"
+        }
+      }
     },
     "web": {
       "bundler": "metro",
@@ -33,6 +38,14 @@
         "expo-image-picker",
         {
           "cameraPermission": "Allow RoomiFy to access your camera to let you"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
       ]
     ],
