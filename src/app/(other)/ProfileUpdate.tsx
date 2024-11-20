@@ -5,22 +5,23 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import React, { useState } from "react";
-import ProfileNavigationHeader from "@/src/components/Header/ProfileNavigationHeader";
 
-import { Icons } from "@/src/constants/Icons";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { useNavigation } from "expo-router";
 import { userContext } from "../../context/Context";
-import Warning from "@/src/components/Error/LongError/Warning";
 import Axios from "@/src/utils/api/Axios";
 import * as ImageManipulator from "expo-image-manipulator";
+import { SafeAreaView } from "react-native-safe-area-context";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const ProfileUpdate = () => {
   const { profileData } = userContext();
   const navigation = useNavigation();
+  
 
   const id = profileData.id;
   const [name, setName] = useState(profileData.name);
@@ -28,6 +29,7 @@ const ProfileUpdate = () => {
   const [location, setlocation] = useState(profileData.city);
   const [profileImage, setprofileImage] = useState(profileData.profile);
   const [loading, setLoading] = useState(false);
+  
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -117,65 +119,73 @@ const ProfileUpdate = () => {
   };
 
   return (
-    <View className="w-full h-screen relative">
-      <Warning
-        closewarning={closewarning}
-        setclosewarning={setclosewarning}
-        message={"Do not leave fields blank."}
-      />
-      <ProfileNavigationHeader name={"Edit Profile"} log={false} />
-      <View className="w-full px-5 flex gap-7 mt-5">
-        <View className="w-full flex items-center justify-center">
-          <TouchableOpacity className="relative" onPress={pickImage}>
-            <Image
-              source={{ uri: profileImage }}
-              className="w-44 h-44 rounded-full"
-            />
-            <View className="absolute right-5 bottom-5">
-              <Image source={Icons.pen} className="right-0 h-12 w-12" />
+    <>
+      <StatusBar barStyle={"light-content"} />
+      <View className="w-full h-screen">
+        <View className="w-full bg-blue-500 h-96 rounded-b-[40px]">
+          <SafeAreaView className="w-full px-7">
+            <View className="w-full h-full justify-between pb-7">
+              <View className="mt-5 flex-row justify-between items-center">
+                <TouchableOpacity
+                  className="h-12 w-12 rounded-full bg-white flex justify-center items-center"
+                  onPress={() => navigation.goBack()}
+                >
+                  <AntDesign name="arrowleft" size={30} color="black" />
+                </TouchableOpacity>
+                <Text className="text-2xl text-white">Update Profile</Text>
+                <View className="h-12 w-12" />
+              </View>
+              <View className="w-full flex items-center justify-center ">
+                <Image
+                  source={{ uri: profileData.profile }}
+                  className="w-40 h-40 rounded-full"
+                />
+                <View className="mt-5">
+                  <Text className="text-2xl  font-bold text-white">
+                    {profileData.name}
+                  </Text>
+                </View>
+              </View>
             </View>
+          </SafeAreaView>
+        </View>
+        <View className="w-full px-7 pt-5">
+          <Text className="text-2xl font-bold  ">Update Details</Text>
+          <View className="w-full flex gap-4 mt-3">
+            <TextInput
+              className="w-full border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
+              placeholder="Name"
+              value={name}
+              onChangeText={(text) => setName(text)}
+            />
+            <TextInput
+              className="w-full border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
+              placeholder="Phone number"
+              keyboardType="number-pad"
+              value={phone}
+              onChangeText={(text) => setPhone(text)}
+            />
+            <TextInput
+              className="w-full border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
+              placeholder="Name"
+              value={name}
+              onChangeText={(text) => setName(text)}
+            />
+            <TextInput
+              className="w-full border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
+              placeholder="Name"
+              value={location}
+              onChangeText={(text) => setName(text)}
+            />
+          </View>
+        </View>
+        <View className="w-full px-20 pt-10">
+          <TouchableOpacity className="  w-full py-7 bg-blue-500 rounded-2xl flex items-center justify-center">
+            <Text className="text-xl font-bold text-white">Update Profile</Text>
           </TouchableOpacity>
         </View>
-        <View className="w-full flex gap-5">
-          <Text className="opacity-65">
-            Please fill in your profile details
-          </Text>
-          <TextInput
-            value={name}
-            onChangeText={setName}
-            placeholder="Name"
-            className="w-full border-[1px] border-zinc-400 px-3 h-16 rounded-3xl text-xl"
-          />
-          <TextInput
-            value={phone}
-            onChangeText={setPhone}
-            placeholder="Phone"
-            className="w-full border-[1px] border-zinc-400 px-3 h-16 rounded-3xl text-xl"
-          />
-          <TextInput
-            value={location}
-            onChangeText={setlocation}
-            placeholder="Location"
-            className="w-full border-[1px] border-zinc-400 px-3 h-16 rounded-3xl text-xl"
-          />
-        </View>
       </View>
-
-      <View className="absolute w-full bottom-10 flex items-center justify-center">
-        {loading ? (
-          <TouchableOpacity className="px-20 py-6 bg-green-500 rounded-3xl flex-row items-center justify-center gap-2">
-            <ActivityIndicator size="large" color="#0000ff" />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            onPress={validation}
-            className="px-20 py-6 bg-green-500 rounded-3xl flex-row items-center justify-center gap-2"
-          >
-            <Text className="text-2xl text-white">Update</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
+    </>
   );
 };
 

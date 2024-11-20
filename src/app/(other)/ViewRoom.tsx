@@ -66,7 +66,6 @@ const ViewRoom = () => {
       )}
       {data ? (
         <View className="w-full h-full relative ">
-          <LocationWarning />
           <ImageView
             images={images}
             imageIndex={0}

@@ -16,7 +16,6 @@ export const ContextProvider = ({ children }) => {
   const [productID, setProductID] = useState(null);
   const [comment, setComment] = useState(false);
   const [profileData, setProfileData] = useState(null);
-  const [locationWarning, setLocationWarning] = useState(false);
 
   const getProfile = async () => {
     if (token) {
@@ -116,8 +115,6 @@ export const ContextProvider = ({ children }) => {
         getData,
         getProfile,
         getLogin,
-        locationWarning,
-        setLocationWarning,
       }}
     >
       {children}

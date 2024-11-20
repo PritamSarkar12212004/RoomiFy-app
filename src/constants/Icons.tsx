@@ -4,4 +4,5 @@ export const Icons = {
   user: require("../assets/icons/cat.png"),
   power: require("../assets/icons/power-on.png"),
   pen: require("../assets/icons/pen.png"),
+  logout:require("../assets/icons/logout.png"),
 };
