@@ -1,10 +1,9 @@
-import { View, Text, Image, TouchableOpacity, Modal } from "react-native";
-import React, { useEffect } from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import Axios from "@/src/utils/api/Axios";
 import { userContext } from "../../../context/Context";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+
 import Ionicons from "@expo/vector-icons/Ionicons";
 const RoomListCard = ({
   userImage,
@@ -17,12 +16,10 @@ const RoomListCard = ({
   token,
   exact_location,
   price,
-  
 }: any) => {
+ 
   const roite = useRouter();
-  const handleLike = () => {
-    Axios.post("/room/like", { token: token, productID: id }).then((res) => {});
-  };
+ 
   const { setProductID, commentSetter } = userContext();
 
   useEffect(() => {
@@ -50,8 +47,7 @@ const RoomListCard = ({
             <Text className="text-3xl font-bold">{userName}</Text>
           </View>
           <View className="flex-row items-center gap-4 opacity-65">
-            <AntDesign name="like2" size={30} color="black" />
-            <FontAwesome name="comment-o" size={30} color="black" />
+           
           </View>
         </View>
         <View className="w-full flex-row items-center justify-between pr-2 mt-2">

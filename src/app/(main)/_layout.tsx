@@ -53,20 +53,7 @@ const _layout = () => {
         options={{
           tabBarIcon: ({ color, size }) => (
             <>
-              {profileData ? (
-                <Image
-                  source={{ uri: profileData.profile }}
-                  style={{
-                    width: 45, // Adjust image width
-                    height: 45, // Adjust image height
-                    borderRadius: 20, // Make it a circle
-                    borderWidth: 2, // Add border around profile image
-                    borderColor: color, // Border color based on tab color
-                  }}
-                />
-              ) : (
-                <AntDesign name="user" size={35} color={color} />
-              )}
+              <AntDesign name="user" size={35} color={color} />
             </>
           ),
         }}

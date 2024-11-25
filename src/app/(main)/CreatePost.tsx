@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   StatusBar,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ProfileNavigationHeader from "@/src/components/Header/ProfileNavigationHeader";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
@@ -20,6 +20,7 @@ import { useNavigation } from "expo-router";
 import FileSize from "@/src/components/Error/LongError/FileSize";
 import { userContext } from "../../context/Context";
 import * as ImageManipulator from "expo-image-manipulator";
+import * as Location from "expo-location";
 import axios from "axios";
 
 const CreatePost = () => {
@@ -51,8 +52,27 @@ const CreatePost = () => {
   const [loading, setLoading] = useState(false);
   const [closewarning, setclosewarning] = useState(false);
   const [closewarningfile, setclosewarningfile] = useState(false);
+  const [postTitle, setPostTitle] = useState(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [location, setLocation] = useState<Location.LocationObject | null>(
+    null
+  );
+
+  const getlocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setErrorMsg("Permission to access location was denied");
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    setLocation(location);
+  };
   const uploadImages = async () => {
+    getlocation();
+
     if (
+      !location ||
       !mainimage ||
       !child1 ||
       !child2 ||
@@ -61,13 +81,14 @@ const CreatePost = () => {
       !child5 ||
       !child6 ||
       !price ||
+      !postTitle ||
       description.trim() === ""
     ) {
       setclosewarning(true);
       return;
     }
     setLoading(true);
-  
+
     const uploadToCloudinary = async (imageUri) => {
       try {
         const fileExtension = imageUri.split(".").pop();
@@ -78,7 +99,7 @@ const CreatePost = () => {
           name: `uploaded_image.${fileExtension}`,
         });
         formData.append("upload_preset", "RoomiFy");
-  
+
         const response = await axios.post(
           "https://api.cloudinary.com/v1_1/dftt4ow6q/image/upload",
           formData,
@@ -87,27 +108,39 @@ const CreatePost = () => {
         return response.data.secure_url;
       } catch (error) {
         // Log error if there is an issue with the upload
-        console.error(`Error uploading image: ${imageUri}`, error.response || error);
+        console.error(
+          `Error uploading image: ${imageUri}`,
+          error.response || error
+        );
         throw error; // Rethrow to stop execution if error occurs
       }
     };
-  
+
     try {
       // Upload all images concurrently
-      const [mainImageUrl, child1Url, child2Url, child3Url, child4Url, child5Url, child6Url] =
-        await Promise.all([
-          uploadToCloudinary(mainimage),
-          uploadToCloudinary(child1),
-          uploadToCloudinary(child2),
-          uploadToCloudinary(child3),
-          uploadToCloudinary(child4),
-          uploadToCloudinary(child5),
-          uploadToCloudinary(child6),
-        ]);
-  
+      const [
+        mainImageUrl,
+        child1Url,
+        child2Url,
+        child3Url,
+        child4Url,
+        child5Url,
+        child6Url,
+      ] = await Promise.all([
+        uploadToCloudinary(mainimage),
+        uploadToCloudinary(child1),
+        uploadToCloudinary(child2),
+        uploadToCloudinary(child3),
+        uploadToCloudinary(child4),
+        uploadToCloudinary(child5),
+        uploadToCloudinary(child6),
+      ]);
+
       // Proceed with the API request if all images are uploaded successfully
       const response = await Axios.post("/upload/product", {
         id: token,
+        postTitle,
+        location,
         description,
         price,
         family,
@@ -131,10 +164,34 @@ const CreatePost = () => {
         childImg5: child5Url,
         childImg6: child6Url,
       });
-  
+      const reset = () => {
+        setdescription("");
+        setprice(null);
+        setFamily(false);
+        setSingle(false);
+        setGroup(false);
+        setDouble(false);
+        setIndependent(false);
+        setNonIndependent(false);
+        setBikeParking(false);
+        setWifi(false);
+        setLight(false);
+        setFan(false);
+        setCooler(false);
+        setBed(false);
+        setAttachedWashroom(false);
+        setMainimage(null);
+        setChild1(null);
+        setChild2(null);
+        setChild3(null);
+        setChild4(null);
+        setChild5(null);
+        setChild6(null);
+      };
       if (response.data.status === "success") {
         getData();
         setLoading(false);
+        reset();
         navigation.goBack();
       } else {
         // Handle unexpected API response
@@ -147,7 +204,6 @@ const CreatePost = () => {
       setLoading(false);
     }
   };
-  
 
   const pickImage1 = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -261,6 +317,30 @@ const CreatePost = () => {
       );
       setChild6(compressedImage.uri);
     }
+  };
+  const priceValidation = (phone) => {
+    // Check if phone contains any non-numeric characters or dots
+    const regex = /^[0-9]*$/; // Allows numeric characters or an empty string
+
+    if (typeof phone !== "string") {
+      alert("Phone number must be a string.");
+      return;
+    }
+
+    if (!regex.test(phone)) {
+      alert(
+        "Phone number can only contain numeric characters and no dots or special characters."
+      );
+      return;
+    }
+
+    if (phone.length > 10) {
+      alert("Phone number must be between 10 to 15 digits.");
+      return;
+    }
+
+    // Allow empty string to clear the input
+    setprice(phone); // Update phone state if valid
   };
 
   return (
@@ -395,12 +475,26 @@ const CreatePost = () => {
           <View className="w-full px-4 ">
             <TextInput
               value={price}
-              onChangeText={(text) => setprice(text)}
+              onChangeText={(text) => priceValidation(text)}
               inputMode="numeric"
               placeholder="Rent"
               className="w-full h-16 border border-zinc-400 rounded-lg p-2 mt-4 placeholder:items-start justify-start text-xl"
             />
+            <TextInput
+              value={postTitle}
+              onChangeText={(text) => setPostTitle(text)}
+              keyboardType="default"
+              placeholder="Title of the post"
+              className="w-full h-16 border border-zinc-400 rounded-lg p-2 mt-4 placeholder:items-start justify-start text-xl"
+            />
+            {/* <View className="w-full mt-4 flex items-center justify-center">
+              <TouchableOpacity onpre className="px-12 rounded-3xl gap-3 py-3 bg-blue-500  flex-row items-center justify-center">
+                <FontAwesome name="location-arrow" size={30} color="white" />
+                <Text className=" text-white">Location</Text>
+              </TouchableOpacity>
+            </View> */}
           </View>
+
           <View className="w-full mt-4 px-3">
             <Text className="text-xl mb-3">Category</Text>
             <View className="w-full flex-row flex-wrap gap-4">

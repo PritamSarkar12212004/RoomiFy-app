@@ -16,6 +16,10 @@
       "supportsTablet": true,
       "runtimeVersion": {
         "policy": "appVersion"
+      },
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow RoomiFy to access your camera to capture images for room listings.",
+        "NSMicrophoneUsageDescription": "Allow RoomiFy to access your microphone for voice-based features."
       }
     },
     "android": {
@@ -24,8 +28,16 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.pritam_2004.RoomiFy",
-      "permissions": ["android.permission.RECORD_AUDIO"],
-      "runtimeVersion": "1.0.0"
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "runtimeVersion": "1.0.0",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCINS2dyuBipK8MZzOQnzyKdrS2I1_b5I4"
+        }
+      }
     },
     "web": {
       "bundler": "metro",
@@ -37,7 +49,7 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "Allow RoomiFy to access your camera to let you"
+          "cameraPermission": "Allow RoomiFy to access your camera to let you capture photos for room listings."
         }
       ],
       [
@@ -46,6 +58,12 @@
           "android": {
             "usesCleartextTraffic": true
           }
+        }
+      ],
+      [
+        "react-native-permissions",
+        {
+          "iosPermissions": ["Camera", "Microphone"]
         }
       ]
     ],

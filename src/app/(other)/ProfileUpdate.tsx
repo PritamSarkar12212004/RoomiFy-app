@@ -21,15 +21,13 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 const ProfileUpdate = () => {
   const { profileData } = userContext();
   const navigation = useNavigation();
-  
-
   const id = profileData.id;
   const [name, setName] = useState(profileData.name);
-  const [phone, setPhone] = useState(profileData.phone);
+  const [phone, setPhone] = useState(String(profileData.phone));
   const [location, setlocation] = useState(profileData.city);
   const [profileImage, setprofileImage] = useState(profileData.profile);
   const [loading, setLoading] = useState(false);
-  
+  const [updateloading, setupdateloading] = useState(false);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -51,9 +49,9 @@ const ProfileUpdate = () => {
 
   const uploadDataBackend = async () => {
     if (!profileImage) {
-      console.log("No image selected");
       return;
     }
+    setupdateloading(true);
     setLoading(true);
 
     const fileExtension = profileImage.split(".").pop();
@@ -97,6 +95,7 @@ const ProfileUpdate = () => {
       // After successful upload, you can update profile data with new image URL
       navigation.goBack();
       setLoading(false);
+      setupdateloading(false);
     } catch (error) {
       console.error("Upload failed", error);
       setLoading(false);
@@ -112,7 +111,6 @@ const ProfileUpdate = () => {
       location === "" ||
       profileImage === ""
     ) {
-      setclosewarning(true);
     } else {
       uploadDataBackend();
     }
@@ -136,10 +134,12 @@ const ProfileUpdate = () => {
                 <View className="h-12 w-12" />
               </View>
               <View className="w-full flex items-center justify-center ">
-                <Image
-                  source={{ uri: profileData.profile }}
-                  className="w-40 h-40 rounded-full"
-                />
+                <TouchableOpacity onPress={pickImage}>
+                  <Image
+                    source={{ uri: profileImage }}
+                    className="w-40 h-40 rounded-full"
+                  />
+                </TouchableOpacity>
                 <View className="mt-5">
                   <Text className="text-2xl  font-bold text-white">
                     {profileData.name}
@@ -165,24 +165,33 @@ const ProfileUpdate = () => {
               value={phone}
               onChangeText={(text) => setPhone(text)}
             />
-            <TextInput
-              className="w-full border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
-              placeholder="Name"
-              value={name}
-              onChangeText={(text) => setName(text)}
-            />
+
             <TextInput
               className="w-full border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
               placeholder="Name"
               value={location}
-              onChangeText={(text) => setName(text)}
+              onChangeText={(text) => setlocation(text)}
             />
           </View>
         </View>
         <View className="w-full px-20 pt-10">
-          <TouchableOpacity className="  w-full py-7 bg-blue-500 rounded-2xl flex items-center justify-center">
-            <Text className="text-xl font-bold text-white">Update Profile</Text>
-          </TouchableOpacity>
+          {updateloading ? (
+            <TouchableOpacity
+              onPress={() => validation()}
+              className="  w-full py-7 bg-blue-500 rounded-2xl flex items-center justify-center"
+            >
+              <ActivityIndicator size="large" color="#fff" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => validation()}
+              className="  w-full py-7 bg-blue-500 rounded-2xl flex items-center justify-center"
+            >
+              <Text className="text-xl font-bold text-white">
+                Update Profile
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </>

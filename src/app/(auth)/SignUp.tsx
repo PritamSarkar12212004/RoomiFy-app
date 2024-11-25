@@ -44,7 +44,7 @@ const SignUp = () => {
 
     let location = await Location.getCurrentPositionAsync({});
     setLocation(location);
-  }; 
+  };
   const phoneValidation = (phone) => {
     // Check if phone contains any non-numeric characters or dots
     const regex = /^[0-9]*$/; // Allows numeric characters or an empty string
@@ -69,7 +69,7 @@ const SignUp = () => {
     // Allow empty string to clear the input
     setPhone(phone); // Update phone state if valid
   };
-  const tokensaveLocalStorege = async (token: string) => {
+  const tokensaveLocalStorege = async (token) => {
     try {
       await AsyncStorage.setItem("token", token);
       tokenSetter(token);

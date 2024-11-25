@@ -10,12 +10,16 @@ import Axios from "../utils/api/Axios";
 import { router } from "expo-router";
 const Context = createContext();
 export const ContextProvider = ({ children }) => {
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(null);
   const [data, setdata] = useState(null);
   const [token, setToken] = useState(null);
   const [productID, setProductID] = useState(null);
   const [comment, setComment] = useState(false);
   const [profileData, setProfileData] = useState(null);
+  const [postRommControll, setPostRommControll] = useState(null);
+  const postRoomControllerSet = (data) => {
+    setPostRommControll(data);
+  };
 
   const getProfile = async () => {
     if (token) {
@@ -115,6 +119,8 @@ export const ContextProvider = ({ children }) => {
         getData,
         getProfile,
         getLogin,
+        postRoomControllerSet,
+        postRommControll,
       }}
     >
       {children}

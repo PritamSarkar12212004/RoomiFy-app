@@ -19,7 +19,8 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useNavigation } from "expo-router";
 import { FacilityIcon } from "@/src/constants/FacilityIncon";
 import Feather from "@expo/vector-icons/Feather";
-import LocationWarning from "@/src/components/warnings/LocationWarning";
+import ProfileView from "@/src/components/view/profile/ProfileView";
+import MapView, { Marker } from "react-native-maps";
 
 const ViewRoom = () => {
   const router = useRoute();
@@ -30,6 +31,23 @@ const ViewRoom = () => {
   const [images, setImages] = useState([]);
   const [description, setdescription] = useState("");
   const mavigation = useNavigation();
+  const [open, setOpen] = useState(false);
+  const [lat, setlat] = useState(null);
+  const [lon, setlon] = useState(null);
+  const handleMapPress = (lat, lon) => {
+    const url = `https://www.google.com/maps?q=${lat},${lon}`;
+    Linking.openURL(url).catch((err) =>
+      console.error("Error opening Google Maps", err)
+    );
+  };
+  const routeCoordinates = [
+    { latitude: 37.78825, longitude: -122.4324 }, // Point A
+    { latitude: 37.78875, longitude: -122.4374 }, // Point B
+    { latitude: 37.78925, longitude: -122.4424 }, // Point C
+  ];
+  const ProfileDetilesOpen = () => {
+    setOpen(!open);
+  };
 
   const linkDailer = (data) => {
     Linking.openURL(`tel:${data}`);
@@ -51,6 +69,8 @@ const ViewRoom = () => {
           ]);
           setmainImg(res.data.mainImage);
           setdescription(res.data.description);
+          setlat(res.data.location.lat);
+          setlon(res.data.location.lon);
         }
       })
       .catch((err) => {
@@ -66,6 +86,17 @@ const ViewRoom = () => {
       )}
       {data ? (
         <View className="w-full h-full relative ">
+          {open && (
+            <ProfileView
+              open={open}
+              setOpen={setOpen}
+              profleImage={data.owner.profilePicture}
+              username={data.owner.username}
+              city={data.owner.exact_location.city}
+              village={data.owner.exact_location.village}
+              gender={data.owner.gender}
+            />
+          )}
           <ImageView
             images={images}
             imageIndex={0}
@@ -91,9 +122,6 @@ const ViewRoom = () => {
                     >
                       <AntDesign name="arrowleft" size={24} color="black" />
                     </TouchableOpacity>
-                    <View className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center z-20 opacity-75">
-                      <AntDesign name="hearto" size={24} color="black" />
-                    </View>
                   </View>
                   {mainImg ? (
                     <TouchableOpacity
@@ -117,10 +145,12 @@ const ViewRoom = () => {
               <View className="w-full  flex px-5 rounded-t-[40px] mt-[-20] bg-white pt-5  ">
                 <View className="w-full flex-row justify-between items-center">
                   <Text className="text-3xl ">{data.owner.username}</Text>
-                  <Image
-                    source={{ uri: data.owner.profilePicture }}
-                    className="w-12 h-12 rounded-full"
-                  />
+                  <TouchableOpacity onPress={() => ProfileDetilesOpen()}>
+                    <Image
+                      source={{ uri: data.owner.profilePicture }}
+                      className="w-12 h-12 rounded-full"
+                    />
+                  </TouchableOpacity>
                 </View>
                 <View className="w-full flex-row gap-2  items-center">
                   <View className="opacity-60">
@@ -131,8 +161,7 @@ const ViewRoom = () => {
                     />
                   </View>
                   <Text className="text-lg font-bold opacity-65">
-                    {data.owner.exact_location.city},
-                    {data.owner.exact_location.village}
+                    {data.location.city},{data.location.village}
                   </Text>
                 </View>
                 <View className=" mt-7 w-full flex gap-3 ">
@@ -244,6 +273,31 @@ const ViewRoom = () => {
                         )}
                       </View>
                     </ScrollView>
+                  </View>
+                  <View className="w-full">
+                    {lat && lon ? (
+                      <MapView
+                        provider="google"
+                        scrollEnabled={false}
+                        showsUserLocation
+                        onPress={() => handleMapPress(lat, lon)}
+                        style={{ width: "100%", height: 400 }}
+                        initialRegion={{
+                          latitude: lat,
+                          longitude: lon,
+                          latitudeDelta: 0.0922,
+                          longitudeDelta: 0.0421,
+                        }}
+                      >
+                        <Marker
+                          coordinate={{ latitude: lat, longitude: lon }}
+                        />
+                      </MapView>
+                    ) : (
+                      <View className="w-full h-72 flex justify-center items-center">
+                        <Text>No location available</Text>
+                      </View>
+                    )}
                   </View>
                 </View>
               </View>
