@@ -24,30 +24,30 @@ const Profile = () => {
   const [log, setlog] = useState(false);
   const { profileData, getProfile } = userContext();
   const navigation = useRouter();
-  const phoneValidation = (phone) => {
-    // Check if phone contains any non-numeric characters or dots
-    const regex = /^[0-9]*$/; // Allows numeric characters or an empty string
+  // const phoneValidation = (phone) => {
+  //   // Check if phone contains any non-numeric characters or dots
+  //   const regex = /^[0-9]*$/; // Allows numeric characters or an empty string
 
-    if (typeof phone !== "string") {
-      alert("Phone number must be a string.");
-      return;
-    }
+  //   if (typeof phone !== "string") {
+  //     alert("Phone number must be a string.");
+  //     return;
+  //   }
 
-    if (!regex.test(phone)) {
-      alert(
-        "Phone number can only contain numeric characters and no dots or special characters."
-      );
-      return;
-    }
+  //   if (!regex.test(phone)) {
+  //     alert(
+  //       "Phone number can only contain numeric characters and no dots or special characters."
+  //     );
+  //     return;
+  //   }
 
-    if (phone.length > 10) {
-      alert("Phone number must be between 10 to 15 digits.");
-      return;
-    }
+  //   if (phone.length > 10) {
+  //     alert("Phone number must be between 10 to 15 digits.");
+  //     return;
+  //   }
 
-    // Allow empty string to clear the input
-    setPhone(phone); // Update phone state if valid
-  };
+  //   // Allow empty string to clear the input
+  //   setPhone(phone); // Update phone state if valid
+  // };
   useFocusEffect(
     React.useCallback(() => {
       getProfile();
@@ -132,12 +132,6 @@ const Profile = () => {
                         <Text className="text-2xl font-bold text-blue-600">
                           Share
                         </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        activeOpacity={0.5}
-                        className="px-5 py-3 rounded-2xl  border-2 border-zinc-500"
-                      >
-                        <AntDesign name="adduser" size={24} color="blue" />
                       </TouchableOpacity>
                     </View>
                     <View className="w-full flex gap-3">

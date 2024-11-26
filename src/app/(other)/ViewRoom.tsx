@@ -40,11 +40,7 @@ const ViewRoom = () => {
       console.error("Error opening Google Maps", err)
     );
   };
-  const routeCoordinates = [
-    { latitude: 37.78825, longitude: -122.4324 }, // Point A
-    { latitude: 37.78875, longitude: -122.4374 }, // Point B
-    { latitude: 37.78925, longitude: -122.4424 }, // Point C
-  ];
+
   const ProfileDetilesOpen = () => {
     setOpen(!open);
   };
@@ -69,8 +65,8 @@ const ViewRoom = () => {
           ]);
           setmainImg(res.data.mainImage);
           setdescription(res.data.description);
-          setlat(res.data.location.lat);
-          setlon(res.data.location.lon);
+          setlat(res.data.location.coordinates[1]);
+          setlon(res.data.location.coordinates[0]);
         }
       })
       .catch((err) => {

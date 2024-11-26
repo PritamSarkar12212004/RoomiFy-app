@@ -23,7 +23,7 @@ const MainLayout = () => {
     } else if (auth === false) {
       router.replace("/(auth)"); // Navigate to auth screens.
     } else {
-      router.replace("/(other)/Search"); // Navigate to main screens.
+      router.replace("/(main)"); // Navigate to main screens.
     }
   }, [auth]);
   if (auth === null) {

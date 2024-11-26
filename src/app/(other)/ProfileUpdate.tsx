@@ -17,6 +17,7 @@ import Axios from "@/src/utils/api/Axios";
 import * as ImageManipulator from "expo-image-manipulator";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { Alert } from "react-native";
 
 const ProfileUpdate = () => {
   const { profileData } = userContext();
@@ -86,23 +87,38 @@ const ProfileUpdate = () => {
               phone: phone,
               location: location,
               profileImageUrl: response.data.secure_url,
-            });
+            })
+              .then((res) => {
+                if (res.status === 200) {
+                  navigation.goBack();
+                  setLoading(false);
+                  setupdateloading(false);
+                } else {
+                  Alert.alert("Phone number already exists");
+                  setLoading(false);
+                  setupdateloading(false);
+                }
+              })
+              .catch((error) => {
+                if (error.status === 400) {
+                  Alert.alert("Phone number already exists");
+                  setLoading(false);
+                  setupdateloading(false);
+                } else {
+                  Alert.alert("Something went wrong");
+                }
+              });
           } catch (error) {
             console.log(error);
           }
         });
 
       // After successful upload, you can update profile data with new image URL
-      navigation.goBack();
-      setLoading(false);
-      setupdateloading(false);
     } catch (error) {
       console.error("Upload failed", error);
       setLoading(false);
     }
   };
-
-  const [closewarning, setclosewarning] = useState(false);
 
   const validation = () => {
     if (
@@ -176,10 +192,7 @@ const ProfileUpdate = () => {
         </View>
         <View className="w-full px-20 pt-10">
           {updateloading ? (
-            <TouchableOpacity
-              onPress={() => validation()}
-              className="  w-full py-7 bg-blue-500 rounded-2xl flex items-center justify-center"
-            >
+            <TouchableOpacity className="  w-full py-7 bg-blue-500 rounded-2xl flex items-center justify-center">
               <ActivityIndicator size="large" color="#fff" />
             </TouchableOpacity>
           ) : (
