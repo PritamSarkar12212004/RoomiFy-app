@@ -17,6 +17,10 @@ export const ContextProvider = ({ children }) => {
   const [comment, setComment] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const [postRommControll, setPostRommControll] = useState(null);
+  const [location, setlocation] = useState(null);
+  const locationsetter = (data) => {
+    setlocation(data);
+  };
   const postRoomControllerSet = (data) => {
     setPostRommControll(data);
   };
@@ -121,6 +125,8 @@ export const ContextProvider = ({ children }) => {
         getLogin,
         postRoomControllerSet,
         postRommControll,
+        locationsetter,
+        location,
       }}
     >
       {children}

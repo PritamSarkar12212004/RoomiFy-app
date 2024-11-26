@@ -13,7 +13,7 @@ import { userContext } from "../../context/Context";
 import { useFocusEffect } from "@react-navigation/native";
 
 const Index = () => {
-  const { token, data, getToken, getData, getProfile } = userContext();
+  const { token, data, getData, locationsetter, location } = userContext();
   const [comments, setComments] = useState(null);
   useFocusEffect(
     React.useCallback(() => {

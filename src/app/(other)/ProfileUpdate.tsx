@@ -28,6 +28,8 @@ const ProfileUpdate = () => {
   const [location, setlocation] = useState(profileData.city);
   const [profileImage, setprofileImage] = useState(profileData.profile);
   const [loading, setLoading] = useState(false);
+  const [loadingName, setloadingName] = useState(false);
+  const [loadingNumber, setloadingNumber] = useState(false);
   const [updateloading, setupdateloading] = useState(false);
 
   const pickImage = async () => {
@@ -81,11 +83,8 @@ const ProfileUpdate = () => {
         )
         .then((response) => {
           try {
-            Axios.post("/user/profile/update", {
+            Axios.post("/user/profile/update/profile", {
               id: id,
-              name: name,
-              phone: phone,
-              location: location,
               profileImageUrl: response.data.secure_url,
             })
               .then((res) => {
@@ -100,13 +99,7 @@ const ProfileUpdate = () => {
                 }
               })
               .catch((error) => {
-                if (error.status === 400) {
-                  Alert.alert("Phone number already exists");
-                  setLoading(false);
-                  setupdateloading(false);
-                } else {
-                  Alert.alert("Something went wrong");
-                }
+                console.log(error);
               });
           } catch (error) {
             console.log(error);
@@ -119,16 +112,55 @@ const ProfileUpdate = () => {
       setLoading(false);
     }
   };
-
-  const validation = () => {
-    if (
-      name === "" ||
-      phone === null ||
-      location === "" ||
-      profileImage === ""
-    ) {
-    } else {
-      uploadDataBackend();
+  const uploadBackendProfileName = async () => {
+    setupdateloading(true);
+    setloadingName(true);
+    try {
+      Axios.post("/user/profile/update/name", { id: id, name: name })
+        .then((response) => {
+          navigation.goBack();
+          setLoading(false);
+          setupdateloading(false);
+        })
+        .catch((err) => {
+          navigation.goBack();
+          setLoading(false);
+          setupdateloading(false);
+        });
+    } catch (error) {
+      Alert.alert("something went wrong");
+    }
+  };
+  const uploadBackendNumber = async () => {
+    setupdateloading(true);
+    setloadingNumber(true);
+    try {
+      Axios.post("/user/profile/update/number", { id: id, phone: phone })
+        .then((response) => {
+          if (response.status === 200) {
+            navigation.goBack();
+            setloadingNumber(false);
+            setupdateloading(false);
+          } else {
+            Alert.alert("Phone number already exists");
+            setLoading(false);
+            setupdateloading(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err.status);
+          if (err.status === 400) {
+            Alert.alert("Phone number already exists");
+            setloadingNumber(false);
+            setupdateloading(false);
+          } else {
+            Alert.alert("Somthing went wrong");
+            setLoading(false);
+            setupdateloading(false);
+          }
+        });
+    } catch (error) {
+      Alert.alert("something went wrong");
     }
   };
 
@@ -136,9 +168,9 @@ const ProfileUpdate = () => {
     <>
       <StatusBar barStyle={"light-content"} />
       <View className="w-full h-screen">
-        <View className="w-full bg-blue-500 h-96 rounded-b-[40px]">
+        <View className="w-full bg-blue-500 h-[42vh] rounded-b-[40px]">
           <SafeAreaView className="w-full px-7">
-            <View className="w-full h-full justify-between pb-7">
+            <View className="w-full h-full  ">
               <View className="mt-5 flex-row justify-between items-center">
                 <TouchableOpacity
                   className="h-12 w-12 rounded-full bg-white flex justify-center items-center"
@@ -149,7 +181,7 @@ const ProfileUpdate = () => {
                 <Text className="text-2xl text-white">Update Profile</Text>
                 <View className="h-12 w-12" />
               </View>
-              <View className="w-full flex items-center justify-center ">
+              <View className="w-full flex items-center mt-3 justify-center ">
                 <TouchableOpacity onPress={pickImage}>
                   <Image
                     source={{ uri: profileImage }}
@@ -161,6 +193,24 @@ const ProfileUpdate = () => {
                     {profileData.name}
                   </Text>
                 </View>
+                <View className="w-full  flex items-center justify-center">
+                  {loading ? (
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      className="px-12 py-4 mt-3 bg-blue-600 rounded-2xl "
+                    >
+                      <ActivityIndicator size="small" color="white" />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => uploadDataBackend()}
+                      activeOpacity={0.8}
+                      className="px-12 py-4 mt-3 bg-blue-600 rounded-2xl "
+                    >
+                      <Text className="text-white text-xl">Update</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
               </View>
             </View>
           </SafeAreaView>
@@ -168,43 +218,59 @@ const ProfileUpdate = () => {
         <View className="w-full px-7 pt-5">
           <Text className="text-2xl font-bold  ">Update Details</Text>
           <View className="w-full flex gap-4 mt-3">
-            <TextInput
-              className="w-full border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
-              placeholder="Name"
-              value={name}
-              onChangeText={(text) => setName(text)}
-            />
-            <TextInput
-              className="w-full border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
-              placeholder="Phone number"
-              keyboardType="number-pad"
-              value={phone}
-              onChangeText={(text) => setPhone(text)}
-            />
-
-            <TextInput
-              className="w-full border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
-              placeholder="Name"
-              value={location}
-              onChangeText={(text) => setlocation(text)}
-            />
+            <View className="w-full flex-row items-center gap-2 justify-between">
+              <TextInput
+                className=" w-[70%] border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
+                placeholder="Name"
+                value={name}
+                onChangeText={(text) => setName(text)}
+              />
+              {loadingName ? (
+                <TouchableOpacity className="flex-auto bg-blue-500 py-4 rounded-2xl items-center justify-center">
+                  <ActivityIndicator size="small" color="white" />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => uploadBackendProfileName()}
+                  className="flex-auto bg-blue-500 py-4 rounded-2xl items-center justify-center"
+                >
+                  <Text className=" text-lg text-white ">Update</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            <View className="w-full flex-row items-center gap-2 justify-between">
+              <TextInput
+                className="w-[70%] border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
+                placeholder="Phone number"
+                keyboardType="number-pad"
+                value={phone}
+                onChangeText={(text) => setPhone(text)}
+              />
+              {loadingNumber ? (
+                <TouchableOpacity className="flex-auto bg-blue-500 py-4 rounded-2xl items-center justify-center">
+                  <ActivityIndicator size="small" color="white" />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => uploadBackendNumber()}
+                  className="flex-auto bg-blue-500 py-4 rounded-2xl items-center justify-center"
+                >
+                  <Text className=" text-lg text-white ">Update</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            <View className="w-full flex-row items-center gap-2 justify-between">
+              <TextInput
+                className="w-[70%] border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
+                placeholder="Name"
+                value={location}
+                onChangeText={(text) => setlocation(text)}
+              />
+              <TouchableOpacity className="flex-auto bg-blue-500 py-4 rounded-2xl items-center justify-center">
+                <Text className=" text-lg text-white ">Update</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        <View className="w-full px-20 pt-10">
-          {updateloading ? (
-            <TouchableOpacity className="  w-full py-7 bg-blue-500 rounded-2xl flex items-center justify-center">
-              <ActivityIndicator size="large" color="#fff" />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              onPress={() => validation()}
-              className="  w-full py-7 bg-blue-500 rounded-2xl flex items-center justify-center"
-            >
-              <Text className="text-xl font-bold text-white">
-                Update Profile
-              </Text>
-            </TouchableOpacity>
-          )}
         </View>
       </View>
     </>

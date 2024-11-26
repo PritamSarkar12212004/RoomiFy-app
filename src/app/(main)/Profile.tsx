@@ -68,7 +68,7 @@ const Profile = () => {
             </View>
             <>
               {profileData ? (
-                <View className="flex-auto bg-white rounded-t-[50px] mt-16 ">
+                <View className="flex-auto h-screen bg-white rounded-t-[50px] mt-16 ">
                   <View className="w-full flex items-center justify-center  mt-[-70px]">
                     <Image
                       source={{ uri: profileData.profile }}
@@ -148,10 +148,6 @@ const Profile = () => {
                       </TouchableOpacity>
                       <TouchableOpacity className="w-full  rounded-3xl  flex-row justify-between items-center  py-6  px-4 bg-zinc-100 ">
                         <Text className="text-2xl">Privacy</Text>
-                        <AntDesign name="arrowright" size={24} color="black" />
-                      </TouchableOpacity>
-                      <TouchableOpacity className="w-full  rounded-3xl  flex-row justify-between items-center  py-6  px-4 bg-zinc-100 ">
-                        <Text className="text-2xl">Setting</Text>
                         <AntDesign name="arrowright" size={24} color="black" />
                       </TouchableOpacity>
                     </View>
