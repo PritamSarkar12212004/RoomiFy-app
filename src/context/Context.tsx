@@ -18,6 +18,10 @@ export const ContextProvider = ({ children }) => {
   const [profileData, setProfileData] = useState(null);
   const [postRommControll, setPostRommControll] = useState(null);
   const [location, setlocation] = useState(null);
+  const [searchData, setSearchData] = useState(null);
+  const setSearchDataApi = (data) => {
+    setSearchData(data);
+  };
   const locationsetter = (data) => {
     setlocation(data);
   };
@@ -127,6 +131,8 @@ export const ContextProvider = ({ children }) => {
         postRommControll,
         locationsetter,
         location,
+        setSearchDataApi,
+        searchData,
       }}
     >
       {children}

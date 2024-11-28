@@ -17,6 +17,7 @@ import Axios from "@/src/utils/api/Axios";
 import * as ImageManipulator from "expo-image-manipulator";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import * as Location from "expo-location";
 import { Alert } from "react-native";
 
 const ProfileUpdate = () => {
@@ -25,12 +26,36 @@ const ProfileUpdate = () => {
   const id = profileData.id;
   const [name, setName] = useState(profileData.name);
   const [phone, setPhone] = useState(String(profileData.phone));
-  const [location, setlocation] = useState(profileData.city);
+  const [location, setlocation] = useState(null);
   const [profileImage, setprofileImage] = useState(profileData.profile);
   const [loading, setLoading] = useState(false);
   const [loadingName, setloadingName] = useState(false);
   const [loadingNumber, setloadingNumber] = useState(false);
   const [updateloading, setupdateloading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [locationLoading, setLocationLoading] = useState(false);
+
+  const getLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setErrorMsg("Permission to access location was denied");
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    setlocation(location);
+  };
+  const uploadBackendLocation = async () => {
+    setLocationLoading(true);
+    Axios.post("/user/profile/update/location", { location, id: id })
+      .then((res) => {
+        setLocationLoading(false);
+        navigation.goBack();
+      })
+      .catch((err) => {
+        setLocationLoading(false);
+      });
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -260,15 +285,41 @@ const ProfileUpdate = () => {
               )}
             </View>
             <View className="w-full flex-row items-center gap-2 justify-between">
-              <TextInput
-                className="w-[70%] border-[1px] border-zinc-400  h-16 text-xl pl-6 rounded-2xl"
-                placeholder="Name"
-                value={location}
-                onChangeText={(text) => setlocation(text)}
-              />
-              <TouchableOpacity className="flex-auto bg-blue-500 py-4 rounded-2xl items-center justify-center">
-                <Text className=" text-lg text-white ">Update</Text>
-              </TouchableOpacity>
+              <View className="w-full">
+                {locationLoading ? (
+                  <TouchableOpacity
+                    onPress={() => uploadBackendLocation()}
+                    className="w-full gap-2 border-[1px] border-zinc-400 bg-blue-500 h-16 text-xl
+                     pl-6 rounded-2xl justify-center items-center flex-row"
+                  >
+                    <ActivityIndicator size="small" color="white" />
+                  </TouchableOpacity>
+                ) : (
+                  <>
+                    {location ? (
+                      <TouchableOpacity
+                        onPress={() => uploadBackendLocation()}
+                        className="w-full gap-2 border-[1px] border-zinc-400 bg-blue-500 h-16 text-xl
+                     pl-6 rounded-2xl justify-center items-center flex-row"
+                      >
+                        <Text className="text-white text-xl  font-bold">
+                          Update Location
+                        </Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() => getLocation()}
+                        className="w-full gap-2 border-[1px] border-zinc-400 bg-blue-500 h-16 text-xl
+                  pl-6 rounded-2xl justify-center items-center flex-row"
+                      >
+                        <Text className=" text-lg text-white ">
+                          Get Current Location
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </>
+                )}
+              </View>
             </View>
           </View>
         </View>

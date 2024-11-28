@@ -75,7 +75,7 @@ const SignUp = () => {
       tokenSetter(token);
       router.replace("/(main)");
     } catch (error) {
-      console.log(error);
+      return;
     }
   };
   const secureFunc = () => {

@@ -1,23 +1,37 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  ActivityIndicator,
-  StatusBar,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, ScrollView, ActivityIndicator, StatusBar } from "react-native";
+import React, { useState } from "react";
 import MainHead from "@/src/components/Header/MainHead";
 import RoomListCard from "@/src/components/card/Room/RoomListCard";
-import Comments from "../(other)/Comments";
 import { userContext } from "../../context/Context";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Location from "expo-location";
 
 const Index = () => {
   const { token, data, getData, locationsetter, location } = userContext();
+  console.log(location)
   const [comments, setComments] = useState(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const getLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setErrorMsg("Permission to access location was denied");
+      return;
+    }
+    let location = await Location.getCurrentPositionAsync({});
+    locationsetter(location);
+  };
+
+  const locationGet = () => {
+    if (location===null) {
+      getLocation()
+    }
+    return;
+  };
   useFocusEffect(
     React.useCallback(() => {
       getData();
+      locationGet();
     }, [])
   );
 

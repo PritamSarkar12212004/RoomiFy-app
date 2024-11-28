@@ -29,19 +29,14 @@ const Login = () => {
     const regex = /^[0-9]*$/; // Allows numeric characters or an empty string
 
     if (typeof phone !== "string") {
-      alert("Phone number must be a string.");
       return;
     }
 
     if (!regex.test(phone)) {
-      alert(
-        "Phone number can only contain numeric characters and no dots or special characters."
-      );
       return;
     }
 
     if (phone.length > 10) {
-      alert("Phone number must be between 10 to 15 digits.");
       return;
     }
 
