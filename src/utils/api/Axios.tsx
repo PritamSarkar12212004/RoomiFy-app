@@ -1,5 +1,5 @@
 import axios from "axios";
 const Axios = axios.create({
-  baseURL: "http://192.168.43.61:3000",
+  baseURL: "https://roomi-fy-app-bakcend.vercel.app",
 });
 export default Axios;

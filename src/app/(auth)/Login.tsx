@@ -14,6 +14,7 @@ import Type1Error from "@/src/components/Error/LongError/Type1Error";
 import Warning from "@/src/components/Error/LongError/Warning";
 import Axios from "../../utils/api/Axios";
 import { userContext } from "../../context/Context";
+import phoneValidation from "@/src/function/auth/PhoneValidation";
 const Login = () => {
   const { getLogin } = userContext();
   const [close, setclose] = useState(false);
@@ -24,25 +25,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const phoneValidation = (phone) => {
-    // Check if phone contains any non-numeric characters or dots
-    const regex = /^[0-9]*$/; // Allows numeric characters or an empty string
-
-    if (typeof phone !== "string") {
-      return;
-    }
-
-    if (!regex.test(phone)) {
-      return;
-    }
-
-    if (phone.length > 10) {
-      return;
-    }
-
-    // Allow empty string to clear the input
-    setPhone(phone); // Update phone state if valid
-  };
   const validationPass = (pass) => {
     setPassword(pass);
   };
@@ -99,7 +81,7 @@ const Login = () => {
           <View className="relative">
             <TextInput
               value={phone}
-              onChangeText={(phone) => phoneValidation(phone)}
+              onChangeText={(phone) => phoneValidation(phone, setPhone)}
               className="w-full h-16 border-[1px] border-zinc-400 rounded-2xl px-5 text-lg"
               placeholder="Enter your phone number"
               keyboardType="phone-pad" // Use phone-pad for phone number input

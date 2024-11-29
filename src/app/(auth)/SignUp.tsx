@@ -19,6 +19,7 @@ import Warning from "@/src/components/Error/LongError/Warning";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { userContext } from "../../context/Context";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import phoneValidation from "../../function/auth/PhoneValidation";
 const SignUp = () => {
   const { tokenSetter } = userContext();
   const [location, setLocation] = useState<Location.LocationObject | null>(
@@ -35,6 +36,8 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [close, setclose] = useState(false);
   const [closewarning, setclosewarning] = useState(false);
+  phoneValidation();
+
   const getlocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -45,30 +48,7 @@ const SignUp = () => {
     let location = await Location.getCurrentPositionAsync({});
     setLocation(location);
   };
-  const phoneValidation = (phone) => {
-    // Check if phone contains any non-numeric characters or dots
-    const regex = /^[0-9]*$/; // Allows numeric characters or an empty string
 
-    if (typeof phone !== "string") {
-      alert("Phone number must be a string.");
-      return;
-    }
-
-    if (!regex.test(phone)) {
-      alert(
-        "Phone number can only contain numeric characters and no dots or special characters."
-      );
-      return;
-    }
-
-    if (phone.length > 10) {
-      alert("Phone number must be between 10 to 15 digits.");
-      return;
-    }
-
-    // Allow empty string to clear the input
-    setPhone(phone); // Update phone state if valid
-  };
   const tokensaveLocalStorege = async (token) => {
     try {
       await AsyncStorage.setItem("token", token);
@@ -132,8 +112,6 @@ const SignUp = () => {
   };
 
   useEffect(() => {
-    async function getCurrentLocation() {}
-
     getlocation();
   }, []);
   return (
@@ -174,7 +152,7 @@ const SignUp = () => {
             <View className="relative">
               <TextInput
                 value={phone}
-                onChangeText={(phone) => phoneValidation(phone)}
+                onChangeText={(phone) => phoneValidation(phone, setPhone)}
                 className="w-full h-16 border-[1px] border-zinc-400 rounded-2xl px-5 text-lg"
                 placeholder="Enter your phone number"
                 keyboardType="numeric"

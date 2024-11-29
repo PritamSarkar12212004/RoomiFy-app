@@ -27,12 +27,7 @@ const ProfileView = ({
           <View className="w-full mt-4 flex gap-3 px-3">
             <View className="w-full">
               <Text className="text-2xl font-bold">
-                City: <Text className="font-normal text-xl">{city}</Text>
-              </Text>
-            </View>
-            <View className="w-full">
-              <Text className="text-2xl font-bold">
-                Area: <Text className="font-normal text-xl">{village}</Text>
+                Area: <Text className="font-normal text-xl">{city}</Text>
               </Text>
             </View>
             <View className="w-full">

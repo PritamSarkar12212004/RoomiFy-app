@@ -84,7 +84,9 @@ const Search = () => {
     setDebounceTimer(newTimer);
   };
   const searchCall = async (input) => {
-    await Axios.post("/univarsal/search/main", { input: input })
+    const sanitizedInput = input.replace(/\s+/g, "");
+
+    await Axios.post("/univarsal/search/main", { input: sanitizedInput })
       .then((res) => {
         setMainsearchResult(res.data);
         console.log(res.data);
@@ -175,122 +177,6 @@ const Search = () => {
                 <Text className="text-white text-lg font-bold">NearBy</Text>
               </>
             )}
-          </TouchableOpacity>
-        </View>
-        <View className="w-fill  pb-2 border-b-zinc-300">
-          <Text className="text-2xl font-bold mb-2">Price</Text>
-          <View className="flex-row items-center">
-            <View
-              className="w-20 border-[1px] border-zinc-300 px-2 rounded-2xl py-2
-             text-lg
-             "
-            >
-              <Text className="text-lg">{price}</Text>
-            </View>
-            <Slider
-              style={{ width: "70%" }}
-              minimumValue={1000}
-              maximumValue={10000}
-              step={1000}
-              minimumTrackTintColor="blue"
-              maximumTrackTintColor="black"
-              value={price}
-              onValueChange={handlePriceChange}
-            />
-          </View>
-        </View>
-        <View className="w-full pb-3 border-b-[1px] border-zinc-300  ">
-          <View>
-            <Text className="text-2xl font-bold">Room Type</Text>
-          </View>
-          <View className="w-full flex-row py-3  gap-3 justify-between ">
-            <TouchableOpacity
-              onPress={() => setsingle(!single)}
-              className={`px-3 py-2  flex gap-2 border-2  items-center justify-center rounded-2xl ${
-                single ? "border-blue-500" : "border-black"
-              } `}
-            >
-              <FontAwesome6
-                name="person"
-                size={35}
-                color={`${single ? "blue" : "black"}`}
-              />
-              <Text
-                className={` text-lg font-bold ${
-                  single ? "text-blue-500" : "text-black"
-                } `}
-              >
-                Single
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setdouble(!double)}
-              className={`px-3 py-2  flex gap-2 border-2  items-center justify-center rounded-2xl ${
-                double ? "border-blue-500" : "border-black"
-              } `}
-            >
-              <Ionicons
-                name="people"
-                size={35}
-                color={`${double ? "blue" : "black"}`}
-              />
-
-              <Text
-                className={` text-lg font-bold ${
-                  double ? "text-blue-500" : "text-black"
-                } `}
-              >
-                Double
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setgroup(!group)}
-              className={`px-3 py-2  flex gap-2 border-2  items-center justify-center rounded-2xl ${
-                group ? "border-blue-500" : "border-black"
-              } `}
-            >
-              <MaterialIcons
-                name="groups"
-                size={35}
-                color={`${group ? "blue" : "black"}`}
-              />
-
-              <Text
-                className={` text-lg font-bold ${
-                  group ? "text-blue-500" : "text-black"
-                } `}
-              >
-                Groups
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setfamly(!family)}
-              className={`px-3 py-2  flex gap-2 border-2  items-center justify-center rounded-2xl ${
-                group ? "border-blue-500" : "border-black"
-              } `}
-            >
-              <MaterialIcons
-                name="family-restroom"
-                size={35}
-                color={`${family ? "blue" : "black"}`}
-              />
-
-              <Text
-                className={` text-lg font-bold ${
-                  family ? "text-blue-500" : "text-black"
-                } `}
-              >
-                Family
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View className="w-full flex items-center justify-center mt-7 absolute bottom-5">
-          <TouchableOpacity
-            className="px-16 py-4 bg-blue-500 rounded-2xl"
-            activeOpacity={0.8}
-          >
-            <Text className=" text-white text-xl">Search</Text>
           </TouchableOpacity>
         </View>
       </View>

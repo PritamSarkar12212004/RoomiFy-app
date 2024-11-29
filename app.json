@@ -63,7 +63,10 @@
       [
         "react-native-permissions",
         {
-          "iosPermissions": ["Camera", "Microphone"]
+          "iosPermissions": [
+            "Camera",
+            "Microphone"
+          ]
         }
       ]
     ],
@@ -75,7 +78,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "52f412f1-0483-4de1-a60c-be44b9b7c61a"
+        "projectId": "aeb49a6b-3d6c-4e59-aff0-026e2a5dee24"
       }
     },
     "owner": "pritam_sarkar",

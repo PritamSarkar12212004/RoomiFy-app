@@ -157,7 +157,7 @@ const ViewRoom = () => {
                     />
                   </View>
                   <Text className="text-lg font-bold opacity-65">
-                    {data.location.city},{data.location.village}
+                    {data.location.city},{data.location.address_line1}
                   </Text>
                 </View>
                 <View className=" mt-7 w-full flex gap-3 ">

@@ -8,11 +8,10 @@ import {
   FlatList,
   Image,
   Text,
-  Touchable,
   TouchableOpacity,
   View,
 } from "react-native";
-import { useNavigation, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 const PostRoom = () => {
   const { postRoomControllerSet } = userContext();
   const postControllRoomFunc = (data) => {

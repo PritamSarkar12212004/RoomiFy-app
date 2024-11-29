@@ -6,9 +6,9 @@ import {
   StatusBar,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useNavigation, useRouter } from "expo-router";
+import {  useRouter } from "expo-router";
 import { userContext } from "../../context/Context";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -113,24 +113,16 @@ const Profile = () => {
                         <Text className="text-xl">Likes</Text>
                       </View>
                     </View>
-                    <View className="w-full  items-center flex-row justify-between">
+                    <View className="w-full  items-center flex-row justify-center">
                       <TouchableOpacity
                         onPress={() =>
                           navigation.push("/(other)/ProfileUpdate")
                         }
                         activeOpacity={0.5}
-                        className="px-10 py-3 rounded-2xl  border-2 border-zinc-500"
+                        className="px-12 py-4 rounded-2xl   bg-blue-500"
                       >
-                        <Text className="text-2xl font-bold text-blue-600">
-                          Edit
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        activeOpacity={0.5}
-                        className="px-10 py-3 rounded-2xl  border-2 border-zinc-500"
-                      >
-                        <Text className="text-2xl font-bold text-blue-600">
-                          Share
+                        <Text className="text-2xl font-bold text-white">
+                          Edit Profile
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -142,11 +134,11 @@ const Profile = () => {
                         <Text className="text-2xl">Post Rooms</Text>
                         <AntDesign name="arrowright" size={24} color="black" />
                       </TouchableOpacity>
-                      <TouchableOpacity className="w-full  rounded-3xl  flex-row justify-between items-center  py-6  px-4 bg-zinc-100 ">
-                        <Text className="text-2xl">Post Tiffin</Text>
-                        <AntDesign name="arrowright" size={24} color="black" />
-                      </TouchableOpacity>
-                      <TouchableOpacity className="w-full  rounded-3xl  flex-row justify-between items-center  py-6  px-4 bg-zinc-100 ">
+
+                      <TouchableOpacity
+                        onPress={() => navigation.push("/(other)/Privacy")}
+                        className="w-full  rounded-3xl  flex-row justify-between items-center  py-6  px-4 bg-zinc-100 "
+                      >
                         <Text className="text-2xl">Privacy</Text>
                         <AntDesign name="arrowright" size={24} color="black" />
                       </TouchableOpacity>
@@ -159,7 +151,7 @@ const Profile = () => {
         </SafeAreaView>
       ) : (
         <View className="w-full h-screen flex justify-center items-center ">
-          <ActivityIndicator size="large" color="#white" />
+          <ActivityIndicator size="large" color="white" />
         </View>
       )}
     </View>

@@ -19,6 +19,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import * as Location from "expo-location";
 import { Alert } from "react-native";
+import phoneValidation from "@/src/function/auth/PhoneValidation";
 
 const ProfileUpdate = () => {
   const { profileData } = userContext();
@@ -188,6 +189,7 @@ const ProfileUpdate = () => {
       Alert.alert("something went wrong");
     }
   };
+  phoneValidation();
 
   return (
     <>
@@ -269,7 +271,7 @@ const ProfileUpdate = () => {
                 placeholder="Phone number"
                 keyboardType="number-pad"
                 value={phone}
-                onChangeText={(text) => setPhone(text)}
+                onChangeText={(phone) => phoneValidation(phone, setPhone)}
               />
               {loadingNumber ? (
                 <TouchableOpacity className="flex-auto bg-blue-500 py-4 rounded-2xl items-center justify-center">

@@ -8,7 +8,6 @@ import * as Location from "expo-location";
 
 const Index = () => {
   const { token, data, getData, locationsetter, location } = userContext();
-  console.log(location)
   const [comments, setComments] = useState(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -23,8 +22,8 @@ const Index = () => {
   };
 
   const locationGet = () => {
-    if (location===null) {
-      getLocation()
+    if (location === null) {
+      getLocation();
     }
     return;
   };
@@ -48,16 +47,16 @@ const Index = () => {
             {data.map((item) => (
               <RoomListCard
                 key={item._id} // Use item._id for the unique key
-                userImage={item.owner.profilePicture}
-                userName={item.owner.username}
                 mainImage={item.mainImage}
                 id={item._id}
                 bacnedLike={item.likes}
                 backendComment={item.comments}
                 setComments={setComments} // Pass setComments function to handle comments
                 token={token}
-                exact_location={item.location}
+                city={item.location.city}
+                address_line1={item.location.address_line1}
                 price={item.price}
+                postTitle={item.postTitle}
               />
             ))}
           </ScrollView>
