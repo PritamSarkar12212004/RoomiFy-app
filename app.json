@@ -68,7 +68,8 @@
             "Microphone"
           ]
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,12 +1,9 @@
-import { View, Text, Image } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { userContext } from "../../context/Context";
 
 const _layout = () => {
-  const { profileData } = userContext();
-
   return (
     <Tabs
       screenOptions={{

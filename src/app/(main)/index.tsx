@@ -10,15 +10,18 @@ const Index = () => {
   const { token, data, getData, locationsetter, location } = userContext();
   const [comments, setComments] = useState(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
   const getLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      setErrorMsg("Permission to access location was denied");
+    if (!location) {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+      let locations = await Location.getCurrentPositionAsync({});
+      locationsetter(locations);
+    } else {
       return;
     }
-    let location = await Location.getCurrentPositionAsync({});
-    locationsetter(location);
   };
 
   const locationGet = () => {

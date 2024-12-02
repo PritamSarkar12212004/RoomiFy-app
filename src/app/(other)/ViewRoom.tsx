@@ -6,6 +6,7 @@ import {
   ScrollView,
   StatusBar,
   Linking,
+  FlatList,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
@@ -21,9 +22,14 @@ import { FacilityIcon } from "@/src/constants/FacilityIncon";
 import Feather from "@expo/vector-icons/Feather";
 import ProfileView from "@/src/components/view/profile/ProfileView";
 import MapView, { Marker } from "react-native-maps";
+import { userContext } from "@/src/context/Context";
+import RoomSessugation from "@/src/function/ViewRoom/RoomSessugation";
+import ViewRoomSussegest from "@/src/components/card/Room/viewRoomSuggestionCard/ViewRoomSussegest";
 
 const ViewRoom = () => {
+  const { location } = userContext();
   const router = useRoute();
+  const [sussegtion, setSssegtion] = useState(null);
   const [data, setdata] = useState(null);
   const [closewarning, setclosewarning] = useState(false);
   const [mainImg, setmainImg] = useState(null);
@@ -48,7 +54,6 @@ const ViewRoom = () => {
   const linkDailer = (data) => {
     Linking.openURL(`tel:${data}`);
   };
-
   useEffect(() => {
     Axios.post("/list/viewRoom", router.params.id)
       .then((res) => {
@@ -72,6 +77,7 @@ const ViewRoom = () => {
       .catch((err) => {
         console.log(err);
       });
+    RoomSessugation(location, setSssegtion);
   }, []);
   return (
     <>
@@ -81,7 +87,7 @@ const ViewRoom = () => {
         <StatusBar barStyle={"dark-content"} />
       )}
       {data ? (
-        <View className="w-full h-full relative ">
+        <View className="w-full  relative ">
           {open && (
             <ProfileView
               open={open}
@@ -277,7 +283,7 @@ const ViewRoom = () => {
                         scrollEnabled={false}
                         showsUserLocation
                         onPress={() => handleMapPress(lat, lon)}
-                        style={{ width: "100%", height: 400 }}
+                        style={{ width: "100%", height: 500 }}
                         initialRegion={{
                           latitude: lat,
                           longitude: lon,
@@ -294,6 +300,21 @@ const ViewRoom = () => {
                         <Text>No location available</Text>
                       </View>
                     )}
+                  </View>
+                  <View className="w-full bg-white absolute bottom-0 px-3  py-2 items-center justify-between flex-row">
+                    {sussegtion ? (
+                      <FlatList
+                        className="w-full"
+                        nestedScrollEnabled={true}
+                        needsOffscreenAlphaCompositing={true}
+                        data={sussegtion}
+                        renderItem={({ item }) => (
+                          <ViewRoomSussegest infos={item} />
+                        )}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                      />
+                    ) : null}
                   </View>
                 </View>
               </View>
